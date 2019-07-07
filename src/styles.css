@@ -1,1 +1,62 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+	/** box content wird automatisch so berechnet, dass width und height konstant bleiben */
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.2rem;
+	background-color: #FAFBFC;
+}
+
+h3 {
+	font-size: 1.3rem;
+}
+
+button {
+	cursor: pointer;
+}
+
+.kleber {
+	position: fixed;
+	left: -1000px;
+}
+
+.btn-container {
+	margin: 10px 0 10px 0;
+}
+
+.btn-wrapper {
+	margin-bottom: 10px;
+}
+
+
+footer {
+	position: relative;
+	margin-top: 250px;
+}
+
+/* ===== small devices ==== */
+
+@media (max-width: 768px) {
+
+	.h4,
+	body {
+		font-size: 1rem;
+	}
+
+	h2 {
+		font-size: 1.4rem;
+	}
+
+	.dialog {
+		width: 100%;
+	}
+
+}
