@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
+import { SessionService } from '../shared/services/session.service';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
 	selector: 'prfl-navbar',
@@ -12,7 +14,8 @@ export class NavbarComponent implements OnInit {
 
 	@ViewChild(NgbCollapse) navbarToggler: NgbCollapse;
 
-	constructor() { }
+	constructor(private sessionService: SessionService
+		, private authService: AuthService) { }
 
 	ngOnInit() {
 	}
@@ -32,11 +35,11 @@ export class NavbarComponent implements OnInit {
 	}
 
 	logout() {
-
+		this.sessionService.clearSession();
 	}
 
 	login() {
-
+		this.authService.logIn();
 	}
 
 	signup(): void {
