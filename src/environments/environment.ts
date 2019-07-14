@@ -10,7 +10,6 @@ export const environment = {
   apiUrl: 'http://localhost:9000/authprovider',
   authUrl: 'http://localhost:4300',
   assetsUrl: 'assets',
-  clientId: 'T73pF0WTZLuFTv0nbXgqIiXAxyl935c4WCBNwq32uvfQ',
   signupRedirectUrl: 'http://localhost:4200',
   loginRedirectUrl: 'http://localhost:4200#/profil'
 };
