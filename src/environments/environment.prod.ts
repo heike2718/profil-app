@@ -5,7 +5,6 @@ export const environment = {
 	apiUrl: 'https://opa-wetterwachs.de/authprovider',
 	authUrl: 'https://opa-wetterwachs.de/auth-app',
 	assetsUrl: 'profil-app/assets',
-	clientId: 'GerMkzlT2moZq762D5zKAorpg8aUjumXzNQz2yOUd9zQ',
 	signupRedirectUrl: 'https://opa-wetterwachs.de/profil-app',
 	loginRedirectUrl: 'https://opa-wetterwachs.de/profila-app#/profil'
 };
