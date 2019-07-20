@@ -15,8 +15,10 @@ import { LoggedInGuard } from './shared/logged-in.guard';
 import { ErrorComponent } from './error/error.component';
 import { GlobalErrorHandlerService } from './error/global-error-handler.service';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { AuthInterceptor } from './shared/services/auth.interceptor';
+import { AuthInterceptor } from './services/auth.interceptor';
 import { FormsModule } from '@angular/forms';
+import { ProfilComponent } from './profil/profil.component';
+import { LoadingComponent } from './loading/loading.component';
 
 
 // Set different log level depending on environment.
@@ -31,7 +33,9 @@ console.log('LOG_LEVEL=' + LOG_LEVEL);
 		AppComponent,
 		NavbarComponent,
 		HomeComponent,
-		ErrorComponent
+		ErrorComponent,
+		ProfilComponent,
+		LoadingComponent
 	],
 	imports: [
 		BrowserModule,

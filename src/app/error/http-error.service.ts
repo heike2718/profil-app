@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Logger } from '@nsalaun/ng-logger';
 import { MessagesService, Message, WARN, ERROR } from 'hewi-ng-lib';
-import { SessionService } from '../shared/services/session.service';
+import { SessionService } from '../services/session.service';
 
 
 @Injectable({

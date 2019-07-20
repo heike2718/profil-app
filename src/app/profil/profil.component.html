@@ -1,0 +1,8 @@
+<div *ngIf="user$ | async as user else loading">
+	<p>Sie haben sich erfolgreich eingeloggt. Ihre Mailadresse ist {{user.email}}</p>
+</div>
+
+
+<ng-template #loading>
+	<prfl-loading></prfl-loading>
+</ng-template>

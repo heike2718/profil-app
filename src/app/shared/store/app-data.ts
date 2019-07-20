@@ -20,9 +20,14 @@ export class DataStore {
 
 	private authSignUpOutcomeSubject = new BehaviorSubject<boolean>(false);
 
+	private clientAccessTokenSubject = new BehaviorSubject<string>('');
+
 	user$: Observable<User> = this.userSubject.asObservable();
 
 	authSignUpOutcome$: Observable<boolean> = this.authSignUpOutcomeSubject.asObservable();
+
+	clientAccessToken$: Observable<string> = this.clientAccessTokenSubject.asObservable();
+
 
 	updateAuthSignUpOutcome(success: boolean) {
 		this.authSignUpOutcomeSubject.next(success);
@@ -34,6 +39,9 @@ export class DataStore {
 
 	clearUser(): void {
 		this.userSubject.next(initialUser);
+	}
+	updateClientAccessToken(token: string) {
+		this.clientAccessTokenSubject.next(token);
 	}
 }
 

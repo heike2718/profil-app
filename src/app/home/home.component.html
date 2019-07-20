@@ -1,3 +1,8 @@
-<p>
-  home works!
-</p>
+<div *ngIf="isLoggedIn() else loginSignupMessage">
+	<prfl-profil></prfl-profil>
+</div>
+
+
+<ng-template #loginSignupMessage>
+	<p>Bitte registrieren Sie sich oder loggen Sie sich ein, um die Daten Ihres Minikänguru-Kontos zu ändern.</p>
+</ng-template>

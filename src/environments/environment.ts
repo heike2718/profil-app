@@ -11,5 +11,5 @@ export const environment = {
   authUrl: 'http://localhost:4300',
   assetsUrl: 'assets',
   signupRedirectUrl: 'http://localhost:4200',
-  loginRedirectUrl: 'http://localhost:4200#/profil'
+  loginRedirectUrl: 'http://localhost:4200'
 };
