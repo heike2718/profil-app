@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { STORAGE_KEY_JWT_REFRESH_TOKEN, STORAGE_KEY_JWT, STORAGE_KEY_JWT_EXPIRES_AT, STORAGE_KEY_JWT_STATE } from 'hewi-ng-lib';
-import { store } from '../store/app-data';
+import { store } from '../shared/store/app-data';
 import { Router } from '@angular/router';
 
 @Injectable({
