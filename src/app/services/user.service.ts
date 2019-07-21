@@ -5,7 +5,8 @@ import { store } from '../shared/store/app-data';
 import { ResponsePayload } from 'hewi-ng-lib';
 import { HttpErrorService } from '../error/http-error.service';
 import { environment } from '../../environments/environment';
-import { User } from '../shared/model/app-model';
+import { User, ChangePasswordPayload } from '../shared/model/app-model';
+import { Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -16,7 +17,7 @@ export class UserService {
 		, private httpErrorService: HttpErrorService) { }
 
 
-	getUser(): void {
+	loadUser(): void {
 
 		const url = environment.apiUrl + '/profiles/profile';
 
@@ -34,6 +35,17 @@ export class UserService {
 			(error => {
 				this.httpErrorService.handleError(error, 'getUser');
 			})
+		);
+	}
+
+	changePassword(changePasswordPayload: ChangePasswordPayload): Observable<ResponsePayload> {
+
+		const url = environment.apiUrl + '/profiles/profile/password';
+
+		return this.http.put(url, changePasswordPayload).pipe(
+			map(res => <ResponsePayload>res),
+			publishLast(),
+			refCount()
 		);
 	}
 }

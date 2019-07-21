@@ -16,9 +16,12 @@ import { ErrorComponent } from './error/error.component';
 import { GlobalErrorHandlerService } from './error/global-error-handler.service';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth.interceptor';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfilComponent } from './profil/profil.component';
 import { LoadingComponent } from './loading/loading.component';
+import { BaseDataComponent } from './profil/base-data.component';
+import { PasswordComponent } from './profil/password.component';
+import { FormErrorComponent } from './shared/components/form-error/form-error.component';
 
 
 // Set different log level depending on environment.
@@ -35,13 +38,17 @@ console.log('LOG_LEVEL=' + LOG_LEVEL);
 		HomeComponent,
 		ErrorComponent,
 		ProfilComponent,
-		LoadingComponent
+		LoadingComponent,
+		BaseDataComponent,
+		PasswordComponent,
+		FormErrorComponent
 	],
 	imports: [
 		BrowserModule,
 		RouterModule.forRoot(routerConfig, { useHash: true }),
 		HttpClientModule,
 		FormsModule,
+		ReactiveFormsModule,
 		NgLoggerModule.forRoot(LOG_LEVEL),
 		NgbModule,
 		NgbCollapseModule,
