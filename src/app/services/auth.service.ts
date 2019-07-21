@@ -45,7 +45,7 @@ export class AuthService {
 			// TODO: Benutzerkonto anlegen
 		}
 		if ('login' === authResult.state) {
-			this.userService.getUser();
+			this.userService.loadUser();
 		} else {
 			console.log('authResult.state = ' + authResult.state);
 		}

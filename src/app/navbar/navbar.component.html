@@ -7,13 +7,9 @@
 	<div class="collapse navbar-collapse" id="navbarsExampleDefault" [ngbCollapse]="isCollapsed">
 		<ul class="navbar-nav mr-auto">
 			<li routerLinkActive="active"><a routerLink="/" (click)="collapseNav()" class="nav-link">
-					Minikänguru-Konten </a></li>
+					Benutzerdaten </a></li>
 		</ul>
 		<ul class="navbar-nav ml-auto">
-			<li *ngIf="isLoggedIn()" routerLinkActive="active"><a routerLink="/listen" (click)="collapseNav()"
-					class="nav-link"><span class="fa fa-list-alt fa-1x" aria-hidden="true"> </span> Profil <span
-						class="sr-only">(current)</span></a></li>
-
 			<li *ngIf="isLoggedOut()" routerLinkActive="active"><a (click)="signup()" class="nav-link"><span
 						class="fa fa-user-plus fa-1x" aria-hidden="true"></span> registrieren <span
 						class="sr-only">(current)</span></a></li>

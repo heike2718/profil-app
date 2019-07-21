@@ -4,11 +4,11 @@ import { User } from '../model/app-model';
 import * as _ from 'lodash';
 
 
-const initialUser: User = {
-	loginName: undefined,
-	email: undefined,
-	vorname: undefined,
-	nachname: undefined
+export const initialUser: User = {
+	loginName: '',
+	email: '',
+	vorname: '',
+	nachname: ''
 };
 
 @Injectable({
