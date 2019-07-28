@@ -10,7 +10,7 @@ export const environment = {
 	assetsUrl: 'profil-app/assets',
 	authUrl: 'http://localhost:4200',
 	signupRedirectUrl: 'http://localhost:9080',
-	loginRedirectUrl: 'http://localhost:9080#/profil',
+	loginRedirectUrl: 'http://localhost:9080',
 };
 
 /*
