@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { JWTService } from 'hewi-ng-lib';
+import { JWTService, STORAGE_KEY_JWT_STATE } from 'hewi-ng-lib';
+import { environment } from 'src/environments/environment';
+import { UserService } from './services/user.service';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -11,9 +13,15 @@ import { JWTService } from 'hewi-ng-lib';
 export class AppComponent implements OnInit {
 
 	title = 'Minikänguru-Konten';
+	version = environment.version;
+	envName = environment.envName;
+	showEnv = !environment.production;
+	api = environment.apiUrl;
+	logo = environment.assetsUrl + '/mja_logo.png';
 
 	constructor(private jwtService: JWTService
-		, private authService: AuthService) { }
+		, private authService: AuthService
+		, private userService: UserService) { }
 
 	ngOnInit() {
 
@@ -23,7 +31,20 @@ export class AppComponent implements OnInit {
 		if (hash && hash.indexOf('accessToken') > 0) {
 			const authResult = this.jwtService.parseHash(hash);
 			this.authService.setSession(authResult);
+		} else {
+			if (this.isLoggedIn()) {
+				this.userService.loadUser();
+			}
 		}
 	}
+
+	private isLoggedIn(): boolean {
+		const authState = localStorage.getItem(STORAGE_KEY_JWT_STATE);
+		if (authState && 'signup' === authState) {
+			return false;
+		}
+		return !this.jwtService.isJWTExpired();
+	}
+
 
 }

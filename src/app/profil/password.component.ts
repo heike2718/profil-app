@@ -8,7 +8,6 @@ import { store } from '../shared/store/app-data';
 import { UserService } from '../services/user.service';
 import { HttpErrorService } from '../error/http-error.service';
 import { MessagesService } from 'hewi-ng-lib';
-import { SessionService } from '../services/session.service';
 
 @Component({
 	selector: 'prfl-password',
@@ -29,13 +28,12 @@ export class PasswordComponent implements OnInit {
 
 	tooltipPasswort: string;
 
-	submitDisabled: true;
+	submitDisabled: boolean;
 
 	showChangePasswordResult: boolean;
 
 	constructor(private fb: FormBuilder
 		, private userService: UserService
-		, private sessionService: SessionService
 		, private httpErrorService: HttpErrorService
 		, private messagesService: MessagesService) {
 
@@ -57,15 +55,16 @@ export class PasswordComponent implements OnInit {
 	ngOnInit() {
 
 		this.user$ = store.user$;
+		this.submitDisabled = false;
 	}
 
 	closeModal(): void {
 		this.showChangePasswordResult = false;
-		store.clearUser();
-		this.sessionService.clearSession();
 	}
 
 	submit(): void {
+
+		this.submitDisabled = true;
 
 		const _twoPasswords: TwoPasswords = {
 			'passwort': this.passwort.value,
@@ -79,10 +78,13 @@ export class PasswordComponent implements OnInit {
 
 		this.userService.changePassword(credentials).subscribe(
 			payload => {
+
+				this.submitDisabled = false;
 				const level = payload.message.level;
 
 				if (level === 'INFO') {
 					this.showChangePasswordResult = true;
+
 				} else {
 					this.showChangePasswordResult = false;
 					this.messagesService.error(payload.message.message);

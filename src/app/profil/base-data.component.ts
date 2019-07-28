@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, AbstractControl, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
-import { User } from '../shared/model/app-model';
+import { User, ProfileDataPayload, isKnownUser } from '../shared/model/app-model';
 import { store } from '../shared/store/app-data';
 import { emailValidator } from '../shared/validation/app.validators';
+import { UserService } from '../services/user.service';
+import { MessagesService, Message } from 'hewi-ng-lib';
 
 @Component({
 	selector: 'prfl-base-data',
@@ -13,6 +15,10 @@ import { emailValidator } from '../shared/validation/app.validators';
 export class BaseDataComponent implements OnInit, OnDestroy {
 
 	user$: Observable<User>
+
+	loadingIndicator$: Observable<boolean>;
+
+	private message$: Observable<Message>;
 
 	changeDataForm: FormGroup;
 
@@ -24,12 +30,11 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 
 	email: AbstractControl;
 
-	submitDisabled: true;
-
 	private userSubscription: Subscription;
 
-
-	constructor(private fb: FormBuilder) {
+	constructor(private fb: FormBuilder
+		, private userService: UserService
+		, private messagesService: MessagesService) {
 
 		this.changeDataForm = this.fb.group({
 			'loginName': ['', [Validators.required]],
@@ -44,13 +49,27 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 		this.email = this.changeDataForm.controls['email'];
 
 		this.user$ = store.user$;
+		this.loadingIndicator$ = store.loadingIndicator$;
 	}
 
 	ngOnInit() {
 
 		this.userSubscription = this.user$.subscribe(
-			user => this.changeDataForm.patchValue(user)
+			user => {
+				this.changeDataForm.patchValue(user);
+			}
+
 		);
+
+		// this.messagesSubscription = this.message$.subscribe(
+		// 	msg => {
+		// 		if (this.formSubmitted && msg.level) {
+		// 			this.submitDisabled = false;
+		// 			this.cancelDisabled = false;
+		// 			this.formSubmitted = false;
+		// 		}
+		// 	}
+		// );
 	}
 
 	ngOnDestroy() {
@@ -60,7 +79,23 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 	}
 
 	submit(): void {
+		const _data: ProfileDataPayload = {
+			'loginName': this.loginName.value.trim(),
+			'email': this.email.value.trim(),
+			'nachname': this.nachname.value.trim(),
+			'vorname': this.vorname.value.trim()
+		};
 
+		this.messagesService.clear();
+		store.updateLoadingIndicator(true);
+		this.userService.changeProfileData(_data);
+
+	}
+
+	cancel(): void {
+		this.userService.loadUser();
+		store.updateLoadingIndicator(false);
+		this.messagesService.clear();
 	}
 
 }

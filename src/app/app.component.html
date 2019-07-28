@@ -1,7 +1,18 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
+<div class="container-fluid">
 	<prfl-navbar></prfl-navbar>
+	<h1><img src="{{logo}}" alt="Logo">{{title}}</h1>
+	<hewi-messages></hewi-messages>
+	<prfl-loading></prfl-loading>
+
+	<!--TODO in route verschieben, damit es in router-outlet gepflantscht wird -->
 	<main>
 		<router-outlet></router-outlet>
 	</main>
+	<footer class="border-top">
+		<div class="row">
+			<div class="col-md-4 text-md-left">&copy; Heike Winkelvo&szlig;</div>
+			<div *ngIf="showEnv" class="col-md-4 text-xs-center">{{envName}}, API: {{api}}</div>
+			<div class="col-md-4 text-md-right">Version {{version}}</div>
+		</div>
+	</footer>
 </div>

@@ -71,10 +71,21 @@
 
 			<div class="row">
 				<div class="col-sm-12 col-md-4 btn-wrapper">
-					<button class="col-md-12 btn btn-primary" (click)="submit()"
-						[disabled]="!changeDataForm.valid || submitDisabled">
+					<button class="col-md-12 btn btn-primary" (click)="submit()" [disabled]="!changeDataForm.valid">
 						Daten ändern
 					</button>
+				</div>
+				<div class="col-md-4 btn-wrapper">
+					<button class="col-md-12 btn btn-primary" (click)="cancel()">
+						abbrechen
+					</button>
+				</div>
+			</div>
+
+			<div class="row">
+				<div *ngIf="loadingIndicator$ | async" class="col-md-4">
+					<div class=" img">
+						<i class="fa fa-spinner fa-spin"></i> Bitte warten...</div>
 				</div>
 			</div>
 		</form>
