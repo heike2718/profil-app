@@ -47,8 +47,4 @@ export class NavbarComponent implements OnInit {
 	login() {
 		this.authService.logIn();
 	}
-
-	signup(): void {
-
-	}
 }

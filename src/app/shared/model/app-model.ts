@@ -18,6 +18,15 @@ export interface ChangePasswordPayload {
 	twoPasswords: TwoPasswords;
 }
 
+export interface ProfileDataPayload {
+
+	loginName: string;
+	email: string;
+	vorname?: string;
+	nachname?: string;
+
+}
+
 export interface User {
 	loginName?: string;
 	email: string;

@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Logger } from '@nsalaun/ng-logger';
 import { MessagesService, Message, WARN, ERROR } from 'hewi-ng-lib';
 import { SessionService } from '../services/session.service';
+import { store } from '../shared/store/app-data';
 
 
 @Injectable({
@@ -17,14 +18,15 @@ export class HttpErrorService {
 
 	handleError(error: HttpErrorResponse, context: string) {
 
+		store.updateLoadingIndicator(false);
+
 		if (error instanceof ErrorEvent) {
 			this.logger.error(context + ': ErrorEvent occured - ' + JSON.stringify(error));
 			throw (error);
 		} else {
 			switch (error.status) {
 				case 0:
-					this.messagesService.error(context +
-						': Server ist nicht erreichbar. Mögliche Ursachen: downtime oder CORS policy. Guckstu Browser- Log (F12)');
+					this.messagesService.error('Der Server ist nicht erreichbar.');
 					break;
 				default:
 					const msg = this.extractMessageObject(error);
@@ -34,8 +36,7 @@ export class HttpErrorService {
 						if (error.status === 401) {
 							this.sessionService.clearSession();
 						} else {
-							this.messagesService.error(context + ' status=' + error.status
-								+ ': OMG +++ Divide By Cucumber Error. Please Reinstall Universe And Reboot +++');
+							this.messagesService.error('Es ist ein unerwarteter Fehler aufgetreten. Bitte senden Sie eine Mail an info@egladil.de');
 						}
 					}
 			}

@@ -22,15 +22,23 @@ export class DataStore {
 
 	private clientAccessTokenSubject = new BehaviorSubject<string>('');
 
+	private loadingIndicatorSubject = new BehaviorSubject<boolean>(false);
+
 	user$: Observable<User> = this.userSubject.asObservable();
 
 	authSignUpOutcome$: Observable<boolean> = this.authSignUpOutcomeSubject.asObservable();
 
 	clientAccessToken$: Observable<string> = this.clientAccessTokenSubject.asObservable();
 
+	loadingIndicator$: Observable<boolean> = this.loadingIndicatorSubject.asObservable();
+
 
 	updateAuthSignUpOutcome(success: boolean) {
 		this.authSignUpOutcomeSubject.next(success);
+	}
+
+	updateLoadingIndicator(show: boolean) {
+		this.loadingIndicatorSubject.next(show);
 	}
 
 	initUser(user: User): void {
