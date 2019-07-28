@@ -42,6 +42,18 @@ footer {
 	margin-top: 250px;
 }
 
+.page {
+	margin: 10px;
+	padding: 10px;
+	background-color: white;
+	border: 1pt solid;
+	border-color: #D1D5DA;
+	border-radius: 5px;
+	text-align: left;
+}
+
+
+
 /* ===== small devices ==== */
 
 @media (max-width: 768px) {

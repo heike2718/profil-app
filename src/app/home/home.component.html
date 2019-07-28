@@ -1,3 +1,8 @@
-<p>
-  home works!
-</p>
+<div *ngIf="isLoggedIn() else loginSignupMessage">
+	<prfl-profil></prfl-profil>
+</div>
+
+
+<ng-template #loginSignupMessage>
+	<p>Bitte loggen Sie sich ein.</p>
+</ng-template>

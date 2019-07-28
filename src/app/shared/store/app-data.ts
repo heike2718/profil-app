@@ -4,11 +4,11 @@ import { User } from '../model/app-model';
 import * as _ from 'lodash';
 
 
-const initialUser: User = {
-	loginName: undefined,
-	email: undefined,
-	vorname: undefined,
-	nachname: undefined
+export const initialUser: User = {
+	loginName: '',
+	email: '',
+	vorname: '',
+	nachname: ''
 };
 
 @Injectable({
@@ -20,12 +20,25 @@ export class DataStore {
 
 	private authSignUpOutcomeSubject = new BehaviorSubject<boolean>(false);
 
+	private clientAccessTokenSubject = new BehaviorSubject<string>('');
+
+	private blockingIndicatorSubject = new BehaviorSubject<boolean>(false);
+
 	user$: Observable<User> = this.userSubject.asObservable();
 
 	authSignUpOutcome$: Observable<boolean> = this.authSignUpOutcomeSubject.asObservable();
 
+	clientAccessToken$: Observable<string> = this.clientAccessTokenSubject.asObservable();
+
+	blockingIndicator$: Observable<boolean> = this.blockingIndicatorSubject.asObservable();
+
+
 	updateAuthSignUpOutcome(success: boolean) {
 		this.authSignUpOutcomeSubject.next(success);
+	}
+
+	updateBlockingIndicator(show: boolean) {
+		this.blockingIndicatorSubject.next(show);
 	}
 
 	initUser(user: User): void {
@@ -34,6 +47,9 @@ export class DataStore {
 
 	clearUser(): void {
 		this.userSubject.next(initialUser);
+	}
+	updateClientAccessToken(token: string) {
+		this.clientAccessTokenSubject.next(token);
 	}
 }
 
