@@ -18,7 +18,7 @@ export class HttpErrorService {
 
 	handleError(error: HttpErrorResponse, context: string) {
 
-		store.updateLoadingIndicator(false);
+		store.updateBlockingIndicator(false);
 
 		if (error instanceof ErrorEvent) {
 			this.logger.error(context + ': ErrorEvent occured - ' + JSON.stringify(error));

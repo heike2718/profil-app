@@ -21,6 +21,7 @@ export class UserService {
 	loadUser(): void {
 
 		const url = environment.apiUrl + '/profiles/profile';
+		store.updateBlockingIndicator(true);
 
 		this.http.get(url).pipe(
 			map(res => <ResponsePayload>res),
@@ -31,6 +32,7 @@ export class UserService {
 				if (payload.data) {
 					const user = payload.data as User;
 					store.initUser(user);
+					store.updateBlockingIndicator(false);
 				}
 			},
 			(error => {
@@ -39,20 +41,33 @@ export class UserService {
 		);
 	}
 
-	changePassword(changePasswordPayload: ChangePasswordPayload): Observable<ResponsePayload> {
+	changePassword(changePasswordPayload: ChangePasswordPayload): void {
 
 		const url = environment.apiUrl + '/profiles/profile/password';
+		store.updateBlockingIndicator(true);
 
-		return this.http.put(url, changePasswordPayload).pipe(
+		this.http.put(url, changePasswordPayload).pipe(
 			map(res => <ResponsePayload>res),
 			publishLast(),
 			refCount()
+		).subscribe(
+			payload => {
+				if (payload.message) {
+					const _message: Message = payload.message;
+					this.messagesService.info(_message.message);
+				}
+				store.updateBlockingIndicator(false);
+			},
+			(error => {
+				this.httpErrorService.handleError(error, 'changePassword');
+			})
 		);
 	}
 
 	changeProfileData(profileDataPayload: ProfileDataPayload): void {
 
 		const url = environment.apiUrl + '/profiles/profile/data';
+		store.updateBlockingIndicator(true);
 
 		this.http.put(url, profileDataPayload).pipe(
 			map(res => <ResponsePayload>res),
@@ -68,14 +83,11 @@ export class UserService {
 					const _message: Message = payload.message;
 					this.messagesService.info(_message.message);
 				}
-				store.updateLoadingIndicator(false);
+				store.updateBlockingIndicator(false);
 			},
 			(error => {
-				store.updateLoadingIndicator(false);
-				this.httpErrorService.handleError(error, 'getUser');
+				this.httpErrorService.handleError(error, 'changeProfileData');
 			})
 		);
 	}
-
-
 }
