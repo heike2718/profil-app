@@ -16,10 +16,6 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 
 	user$: Observable<User>
 
-	loadingIndicator$: Observable<boolean>;
-
-	private message$: Observable<Message>;
-
 	changeDataForm: FormGroup;
 
 	loginName: AbstractControl;
@@ -31,6 +27,10 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 	email: AbstractControl;
 
 	private userSubscription: Subscription;
+
+	private blockingIndicatorSubscription: Subscription;
+
+	showBlockingIndicator: boolean;
 
 	constructor(private fb: FormBuilder
 		, private userService: UserService
@@ -49,7 +49,6 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 		this.email = this.changeDataForm.controls['email'];
 
 		this.user$ = store.user$;
-		this.loadingIndicator$ = store.loadingIndicator$;
 	}
 
 	ngOnInit() {
@@ -61,20 +60,17 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 
 		);
 
-		// this.messagesSubscription = this.message$.subscribe(
-		// 	msg => {
-		// 		if (this.formSubmitted && msg.level) {
-		// 			this.submitDisabled = false;
-		// 			this.cancelDisabled = false;
-		// 			this.formSubmitted = false;
-		// 		}
-		// 	}
-		// );
+		this.blockingIndicatorSubscription = store.blockingIndicator$.subscribe(
+			value => this.showBlockingIndicator = value
+		);
 	}
 
 	ngOnDestroy() {
 		if (this.userSubscription) {
 			this.userSubscription.unsubscribe();
+		}
+		if (this.blockingIndicatorSubscription) {
+			this.blockingIndicatorSubscription.unsubscribe();
 		}
 	}
 
@@ -87,14 +83,12 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 		};
 
 		this.messagesService.clear();
-		store.updateLoadingIndicator(true);
 		this.userService.changeProfileData(_data);
 
 	}
 
 	cancel(): void {
 		this.userService.loadUser();
-		store.updateLoadingIndicator(false);
 		this.messagesService.clear();
 	}
 

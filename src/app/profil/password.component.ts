@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, AbstractControl, Validators } from '@angular/forms';
 import { AppConstants } from '../shared/app.constants';
 import { passwortValidator, passwortPasswortWiederholtValidator } from '../shared/validation/app.validators';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { User, TwoPasswords, ChangePasswordPayload } from '../shared/model/app-model';
 import { store } from '../shared/store/app-data';
 import { UserService } from '../services/user.service';
@@ -14,7 +14,7 @@ import { MessagesService } from 'hewi-ng-lib';
 	templateUrl: './password.component.html',
 	styleUrls: ['./password.component.css']
 })
-export class PasswordComponent implements OnInit {
+export class PasswordComponent implements OnInit, OnDestroy {
 
 	user$: Observable<User>;
 
@@ -28,17 +28,14 @@ export class PasswordComponent implements OnInit {
 
 	tooltipPasswort: string;
 
-	submitDisabled: boolean;
+	private blockingIndicatorSubscription: Subscription;
 
-	showChangePasswordResult: boolean;
+	showBlockingIndicator: boolean;
 
 	constructor(private fb: FormBuilder
-		, private userService: UserService
-		, private httpErrorService: HttpErrorService
-		, private messagesService: MessagesService) {
+		, private userService: UserService) {
 
 		this.tooltipPasswort = AppConstants.tooltips.PASSWORTREGELN;
-		this.showChangePasswordResult = false;
 
 		this.changePwdForm = this.fb.group({
 			'oldPassword': ['', [Validators.required, passwortValidator]],
@@ -53,18 +50,20 @@ export class PasswordComponent implements OnInit {
 	}
 
 	ngOnInit() {
-
 		this.user$ = store.user$;
-		this.submitDisabled = false;
+
+		this.blockingIndicatorSubscription = store.blockingIndicator$.subscribe(
+			value => this.showBlockingIndicator = value
+		);
 	}
 
-	closeModal(): void {
-		this.showChangePasswordResult = false;
+	ngOnDestroy() {
+		if (this.blockingIndicatorSubscription) {
+			this.blockingIndicatorSubscription.unsubscribe();
+		}
 	}
 
 	submit(): void {
-
-		this.submitDisabled = true;
 
 		const _twoPasswords: TwoPasswords = {
 			'passwort': this.passwort.value,
@@ -76,23 +75,7 @@ export class PasswordComponent implements OnInit {
 			'twoPasswords': _twoPasswords
 		};
 
-		this.userService.changePassword(credentials).subscribe(
-			payload => {
-
-				this.submitDisabled = false;
-				const level = payload.message.level;
-
-				if (level === 'INFO') {
-					this.showChangePasswordResult = true;
-
-				} else {
-					this.showChangePasswordResult = false;
-					this.messagesService.error(payload.message.message);
-				}
-
-			},
-			error => this.httpErrorService.handleError(error, 'changePassword')
-		);
+		this.userService.changePassword(credentials);
 	}
 }
 

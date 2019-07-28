@@ -12,7 +12,7 @@ import { UserService } from './services/user.service';
 })
 export class AppComponent implements OnInit {
 
-	title = 'Minikänguru-Konten';
+	title = 'Minikänguru-Benutzerdaten';
 	version = environment.version;
 	envName = environment.envName;
 	showEnv = !environment.production;
