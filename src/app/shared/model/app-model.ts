@@ -34,6 +34,16 @@ export interface User {
 	nachname?: string;
 }
 
+export interface RefreshAccessTokenPayload {
+	clientAccessToken: string;
+	userRefreshToken: string;
+}
+
+export interface JWTPayload {
+	jwt: string;
+	expiresAtSeconds: number;
+}
+
 export function isKnownUser(user: User): boolean {
 	return user && user.email !== undefined;
 }

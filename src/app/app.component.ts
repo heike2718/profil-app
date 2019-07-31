@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { JWTService, STORAGE_KEY_JWT_STATE } from 'hewi-ng-lib';
+import { JWTService, STORAGE_KEY_JWT_STATE, STORAGE_KEY_JWT } from 'hewi-ng-lib';
 import { environment } from 'src/environments/environment';
 import { UserService } from './services/user.service';
 
