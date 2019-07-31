@@ -39,9 +39,10 @@ export interface RefreshAccessTokenPayload {
 	userRefreshToken: string;
 }
 
-export interface JWTPayload {
+export interface TokenPayload {
 	jwt: string;
-	expiresAtSeconds: number;
+	jwtExpiresAtUnixEpochSeconds: number;
+	clientAccessToken: string;
 }
 
 export function isKnownUser(user: User): boolean {

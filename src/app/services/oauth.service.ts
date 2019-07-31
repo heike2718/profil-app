@@ -5,7 +5,7 @@ import { HttpErrorService } from '../error/http-error.service';
 import { environment } from '../../environments/environment';
 import { publishLast, refCount, map } from 'rxjs/operators';
 // tslint:disable-next-line:max-line-length
-import { OAuthAccessTokenPayload, STORAGE_KEY_CLIENT_ACCESS_TOKEN, STORAGE_KEY_CLIENT_REFRESH_TOKEN, STORAGE_KEY_CLIENT_EXPIRES_AT, RefreshAccessTokenPayload, JWTPayload } from '../shared/model/app-model';
+import { OAuthAccessTokenPayload, STORAGE_KEY_CLIENT_ACCESS_TOKEN, STORAGE_KEY_CLIENT_REFRESH_TOKEN, STORAGE_KEY_CLIENT_EXPIRES_AT, RefreshAccessTokenPayload, TokenPayload } from '../shared/model/app-model';
 import { ResponsePayload, STORAGE_KEY_JWT_REFRESH_TOKEN, STORAGE_KEY_JWT, STORAGE_KEY_JWT_EXPIRES_AT, MessagesService } from 'hewi-ng-lib';
 import { store } from '../shared/store/app-data';
 import { Logger } from '@nsalaun/ng-logger';
@@ -60,12 +60,13 @@ export class OauthService {
 				const level = payload.message.level;
 				if (level === 'INFO') {
 
-					const data: JWTPayload = payload.data;
+					const data: TokenPayload = payload.data;
 
 					if (data) {
 						// das expiresAt sind Sekunden seit 01.01.1970
 						localStorage.setItem(STORAGE_KEY_JWT, data.jwt);
-						localStorage.setItem(STORAGE_KEY_JWT_EXPIRES_AT, JSON.stringify(data.expiresAtSeconds));
+						localStorage.setItem(STORAGE_KEY_JWT_EXPIRES_AT, JSON.stringify(data.jwtExpiresAtUnixEpochSeconds));
+						localStorage.setItem(STORAGE_KEY_CLIENT_ACCESS_TOKEN, data.clientAccessToken);
 					}
 				} else {
 					this.sessionService.clearSession();
