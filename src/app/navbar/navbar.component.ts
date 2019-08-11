@@ -24,10 +24,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 	constructor(private sessionService: SessionService
 		, private oauthService: OauthService
 		, private authService: AuthService
-		, private jwtService: JWTService) {
-
-		this.jwtRefreshTimes = 0;
-	}
+		, private jwtService: JWTService) { }
 
 	ngOnInit() {
 
@@ -42,9 +39,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 		// alle 2 Minuten
 		this.refrehJWTTimerSubscription = interval(2 * 60 * 1000)
 			.subscribe(() => {
-				if (this.oauthService.clientWillExpireSoon()) {
-					this.oauthService.orderClientAccessToken();
-				}
 				if (this.isLoggedIn()) {
 					const _expMinutes = this.jwtService.jwtDurationMinutes();
 					if (_expMinutes <= 3) {
