@@ -4,4 +4,4 @@
 
 ### ReleaseNotes
 
-
+__Release-2.0.0__: automatically refresh client access token and JWT
