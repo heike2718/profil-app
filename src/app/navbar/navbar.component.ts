@@ -15,31 +15,53 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
 	isCollapsed = true;
 
-	private refrehTokenTimerSubscription: Subscription;
+	private refrehJWTTimerSubscription: Subscription;
 
+	private refreshClientTokenTimerSubscription: Subscription;
 
 	@ViewChild(NgbCollapse) navbarToggler: NgbCollapse;
 
 	constructor(private sessionService: SessionService
 		, private oauthService: OauthService
 		, private authService: AuthService
-		, private jwtService: JWTService) { }
+		, private jwtService: JWTService) {
+
+		this.jwtRefreshTimes = 0;
+	}
 
 	ngOnInit() {
 
-		this.refrehTokenTimerSubscription = interval(2 * 60 * 1000)
+		// alle 1 Minute 50 Sekunden
+		this.refreshClientTokenTimerSubscription = interval((2 * 60 - 10) * 1000)
 			.subscribe(() => {
-				const _expMinutes = this.jwtService.jwtDurationMinutes();
-				if (_expMinutes <= 3) {
-					this.oauthService.refreshJWT();
+				if (this.oauthService.clientWillExpireSoon()) {
+					this.oauthService.orderClientAccessToken();
 				}
 			});
 
+		// alle 2 Minuten
+		this.refrehJWTTimerSubscription = interval(2 * 60 * 1000)
+			.subscribe(() => {
+				if (this.oauthService.clientWillExpireSoon()) {
+					this.oauthService.orderClientAccessToken();
+				}
+				if (this.isLoggedIn()) {
+					const _expMinutes = this.jwtService.jwtDurationMinutes();
+					if (_expMinutes <= 3) {
+						this.oauthService.refreshJWT();
+					}
+				}
+			});
 	}
 
 	ngOnDestroy() {
-		if (this.refrehTokenTimerSubscription) {
-			this.refrehTokenTimerSubscription.unsubscribe();
+
+		if (this.refreshClientTokenTimerSubscription) {
+			this.refreshClientTokenTimerSubscription.unsubscribe();
+		}
+
+		if (this.refrehJWTTimerSubscription) {
+			this.refrehJWTTimerSubscription.unsubscribe();
 		}
 	}
 

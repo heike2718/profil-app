@@ -5,7 +5,7 @@ import { HttpErrorService } from '../error/http-error.service';
 import { environment } from '../../environments/environment';
 import { publishLast, refCount, map } from 'rxjs/operators';
 // tslint:disable-next-line:max-line-length
-import { OAuthAccessTokenPayload, STORAGE_KEY_CLIENT_ACCESS_TOKEN, STORAGE_KEY_CLIENT_REFRESH_TOKEN, STORAGE_KEY_CLIENT_EXPIRES_AT, RefreshAccessTokenPayload, TokenPayload } from '../shared/model/app-model';
+import { OAuthAccessTokenPayload, STORAGE_KEY_CLIENT_ACCESS_TOKEN, STORAGE_KEY_CLIENT_EXPIRES_AT, RefreshAccessTokenPayload, JWTPayload } from '../shared/model/app-model';
 import { ResponsePayload, STORAGE_KEY_JWT_REFRESH_TOKEN, STORAGE_KEY_JWT, STORAGE_KEY_JWT_EXPIRES_AT, MessagesService } from 'hewi-ng-lib';
 import { store } from '../shared/store/app-data';
 import { Logger } from '@nsalaun/ng-logger';
@@ -25,9 +25,9 @@ export class OauthService {
 		, private logger: Logger
 	) { }
 
-	orderAccessToken() {
+	orderClientAccessToken() {
 
-		const url = environment.apiUrl + '/accesstoken';
+		const url = environment.apiUrl + '/clients/client/accesstoken';
 
 		this.http.get<ResponsePayload>(url).pipe(
 			publishLast(),
@@ -37,14 +37,13 @@ export class OauthService {
 				const tokenPayload = respPayload.data as OAuthAccessTokenPayload;
 				this.storeClientToken(tokenPayload);
 			},
-			error => this.httpErrorService.handleError(error, 'getClient')
+			error => this.httpErrorService.handleError(error, 'orderClientAccessToken')
 		);
-
 	}
 
 	refreshJWT() {
 
-		const url = environment.apiUrl + '/token';
+		const url = environment.apiUrl + '/jwt';
 
 		const requestPayload: RefreshAccessTokenPayload = {
 			clientAccessToken: localStorage.getItem(STORAGE_KEY_CLIENT_ACCESS_TOKEN),
@@ -60,13 +59,12 @@ export class OauthService {
 				const level = payload.message.level;
 				if (level === 'INFO') {
 
-					const data: TokenPayload = payload.data;
+					const data: JWTPayload = payload.data;
 
 					if (data) {
 						// das expiresAt sind Sekunden seit 01.01.1970
 						localStorage.setItem(STORAGE_KEY_JWT, data.jwt);
-						localStorage.setItem(STORAGE_KEY_JWT_EXPIRES_AT, JSON.stringify(data.jwtExpiresAtUnixEpochSeconds));
-						localStorage.setItem(STORAGE_KEY_CLIENT_ACCESS_TOKEN, data.clientAccessToken);
+						localStorage.setItem(STORAGE_KEY_JWT_EXPIRES_AT, JSON.stringify(data.expiresAtSeconds));
 					}
 				} else {
 					this.sessionService.clearSession();
@@ -86,19 +84,19 @@ export class OauthService {
 
 	private storeClientToken(token: OAuthAccessTokenPayload) {
 		localStorage.setItem(STORAGE_KEY_CLIENT_ACCESS_TOKEN, token.accessToken);
-		localStorage.setItem(STORAGE_KEY_CLIENT_REFRESH_TOKEN, token.refreshToken);
 		localStorage.setItem(STORAGE_KEY_CLIENT_EXPIRES_AT, JSON.stringify(token.expiresAt));
 		store.updateClientAccessToken(token.accessToken);
 	}
 
-	clientTokenExpired(): boolean {
+	clientWillExpireSoon(): boolean {
 
 		// client_token_expires_at ist in Millisekunden seit 01.01.1970
 		const expiration = this.getExpirationAsMoment();
 		if (expiration === null) {
 			return true;
 		}
-		const expired = moment().isAfter(expiration);
+		// lassen 3,5 Minuten Vorsprung zum refreshen des accessTokens.
+		const expired = moment().add(210, 'seconds').isAfter(expiration);
 		return expired;
 	}
 
