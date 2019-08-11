@@ -35,10 +35,11 @@ export class AuthService {
 		// packen authResult ins LocalStorage, damit es ein refresh überlebt!
 		if (authResult.refreshToken) {
 			localStorage.setItem(STORAGE_KEY_JWT_REFRESH_TOKEN, authResult.refreshToken);
+			localStorage.setItem(STORAGE_KEY_JWT, authResult.idToken);
+			localStorage.setItem(STORAGE_KEY_JWT_EXPIRES_AT, JSON.stringify(authResult.expiresAt));
+			localStorage.setItem(STORAGE_KEY_JWT_STATE, authResult.state);
 		}
-		localStorage.setItem(STORAGE_KEY_JWT, authResult.idToken);
-		localStorage.setItem(STORAGE_KEY_JWT_EXPIRES_AT, JSON.stringify(authResult.expiresAt));
-		localStorage.setItem(STORAGE_KEY_JWT_STATE, authResult.state);
+
 
 		if ('signup' === authResult.state) {
 			store.updateAuthSignUpOutcome(true);

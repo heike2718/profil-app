@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { OauthService } from '../services/oauth.service';
 import { STORAGE_KEY_JWT_STATE, JWTService } from 'hewi-ng-lib';
 
 @Component({
@@ -9,15 +8,9 @@ import { STORAGE_KEY_JWT_STATE, JWTService } from 'hewi-ng-lib';
 })
 export class HomeComponent implements OnInit {
 
-	constructor(private oauthService: OauthService
-		, private jwtService: JWTService) { }
+	constructor(private jwtService: JWTService) { }
 
-	ngOnInit() {
-
-		if (this.oauthService.clientTokenExpired) {
-			this.oauthService.orderAccessToken();
-		}
-	}
+	ngOnInit() { }
 
 	isLoggedIn(): boolean {
 

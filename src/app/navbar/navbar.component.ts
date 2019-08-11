@@ -1,25 +1,68 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
-import { SessionService } from '../services/session.service';
 import { AuthService } from '../services/auth.service';
-import { JWTService, STORAGE_KEY_JWT_STATE } from 'hewi-ng-lib';
+import { JWTService, STORAGE_KEY_JWT_STATE, STORAGE_KEY_JWT } from 'hewi-ng-lib';
+import { Subscription, interval } from 'rxjs';
+import { OauthService } from '../services/oauth.service';
+import { SessionService } from '../services/session.service';
 
 @Component({
 	selector: 'prfl-navbar',
 	templateUrl: './navbar.component.html',
 	styleUrls: ['./navbar.component.css']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
 
 	isCollapsed = true;
+
+	private refrehJWTTimerSubscription: Subscription;
+
+	private refreshClientTokenTimerSubscription: Subscription;
 
 	@ViewChild(NgbCollapse) navbarToggler: NgbCollapse;
 
 	constructor(private sessionService: SessionService
+		, private oauthService: OauthService
 		, private authService: AuthService
-		, private jwtService: JWTService) { }
+		, private jwtService: JWTService) {
+
+		this.jwtRefreshTimes = 0;
+	}
 
 	ngOnInit() {
+
+		// alle 1 Minute 50 Sekunden
+		this.refreshClientTokenTimerSubscription = interval((2 * 60 - 10) * 1000)
+			.subscribe(() => {
+				if (this.oauthService.clientWillExpireSoon()) {
+					this.oauthService.orderClientAccessToken();
+				}
+			});
+
+		// alle 2 Minuten
+		this.refrehJWTTimerSubscription = interval(2 * 60 * 1000)
+			.subscribe(() => {
+				if (this.oauthService.clientWillExpireSoon()) {
+					this.oauthService.orderClientAccessToken();
+				}
+				if (this.isLoggedIn()) {
+					const _expMinutes = this.jwtService.jwtDurationMinutes();
+					if (_expMinutes <= 3) {
+						this.oauthService.refreshJWT();
+					}
+				}
+			});
+	}
+
+	ngOnDestroy() {
+
+		if (this.refreshClientTokenTimerSubscription) {
+			this.refreshClientTokenTimerSubscription.unsubscribe();
+		}
+
+		if (this.refrehJWTTimerSubscription) {
+			this.refrehJWTTimerSubscription.unsubscribe();
+		}
 	}
 
 	collapseNav() {
