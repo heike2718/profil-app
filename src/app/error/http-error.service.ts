@@ -24,21 +24,24 @@ export class HttpErrorService {
 			this.logger.error(context + ': ErrorEvent occured - ' + JSON.stringify(error));
 			throw (error);
 		} else {
-			switch (error.status) {
-				case 0:
-					this.messagesService.error('Der Server ist nicht erreichbar.');
-					break;
-				default:
-					const msg = this.extractMessageObject(error);
-					if (msg) {
+			if (error.status === 0) {
+				this.messagesService.error('Der Server ist nicht erreichbar.');
+			} else {
+				const msg = this.extractMessageObject(error);
+				switch (error.status) {
+					case 401:
+					case 908:
 						this.showServerResponseMessage(msg);
-					} else {
-						if (error.status === 401) {
-							this.sessionService.clearSession();
+						this.sessionService.clearSession();
+						break;
+					default: {
+						if (msg) {
+							this.showServerResponseMessage(msg);
 						} else {
 							this.messagesService.error('Es ist ein unerwarteter Fehler aufgetreten. Bitte senden Sie eine Mail an info@egladil.de');
 						}
 					}
+				}
 			}
 		}
 	}
