@@ -8,6 +8,11 @@ export class AuthInterceptor implements HttpInterceptor {
 
 	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
+		// wenn es der accesstoken-request ist, sollte kein JWT hinzugefügt werden?
+		if (req.url.indexOf('/accesstoken') > 0) {
+			return next.handle(req);
+		}
+
 		const idToken = localStorage.getItem(STORAGE_KEY_JWT);
 		if (idToken) {
 			const cloned = req.clone({
