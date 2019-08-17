@@ -5,7 +5,7 @@ import { HttpErrorService } from '../error/http-error.service';
 import { environment } from '../../environments/environment';
 import { publishLast, refCount, map } from 'rxjs/operators';
 // tslint:disable-next-line:max-line-length
-import { OAuthAccessTokenPayload, STORAGE_KEY_CLIENT_ACCESS_TOKEN, STORAGE_KEY_CLIENT_EXPIRES_AT, RefreshAccessTokenPayload, JWTPayload } from '../shared/model/app-model';
+import { OAuthAccessTokenPayload, STORAGE_KEY_CLIENT_ACCESS_TOKEN, STORAGE_KEY_CLIENT_EXPIRES_AT, RefreshAccessTokenPayload, JWTPayload, SUFFIX_KEY_CLIENT_ACCESS_TOKEN } from '../shared/model/app-model';
 import { ResponsePayload, STORAGE_KEY_JWT_REFRESH_TOKEN, STORAGE_KEY_JWT, STORAGE_KEY_JWT_EXPIRES_AT, MessagesService } from 'hewi-ng-lib';
 import { store } from '../shared/store/app-data';
 import { Logger } from '@nsalaun/ng-logger';
@@ -45,8 +45,10 @@ export class OauthService {
 
 		const url = environment.apiUrl + '/jwt';
 
+		const _accessTokens = this.getAllClientAccessTokens();
+
 		const requestPayload: RefreshAccessTokenPayload = {
-			clientAccessToken: localStorage.getItem(STORAGE_KEY_CLIENT_ACCESS_TOKEN),
+			clientAccessToken: _accessTokens,
 			userRefreshToken: localStorage.getItem(STORAGE_KEY_JWT_REFRESH_TOKEN)
 		};
 
@@ -82,13 +84,29 @@ export class OauthService {
 
 	}
 
+	private getAllClientAccessTokens(): string[] {
+		const _accessTokens: string[] = [];
+
+		for (let i = 0; i < localStorage.length; i++) {
+			const key = localStorage.key(i);
+			if (key.indexOf(SUFFIX_KEY_CLIENT_ACCESS_TOKEN) >= 0) {
+				const val = localStorage.getItem(key);
+				if (val) {
+					_accessTokens.push(val);
+				}
+			}
+		}
+		return _accessTokens;
+	}
+
+
 	private storeClientToken(token: OAuthAccessTokenPayload) {
 		localStorage.setItem(STORAGE_KEY_CLIENT_ACCESS_TOKEN, token.accessToken);
 		localStorage.setItem(STORAGE_KEY_CLIENT_EXPIRES_AT, JSON.stringify(token.expiresAt));
 		store.updateClientAccessToken(token.accessToken);
 	}
 
-	clientWillExpireSoon(): boolean {
+	clientTokenWillExpireSoon(): boolean {
 
 		// client_token_expires_at ist in Millisekunden seit 01.01.1970
 		const expiration = this.getExpirationAsMoment();

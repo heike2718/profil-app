@@ -31,7 +31,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 		// alle 1 Minute 50 Sekunden
 		this.refreshClientTokenTimerSubscription = interval((2 * 60 - 10) * 1000)
 			.subscribe(() => {
-				if (this.oauthService.clientWillExpireSoon()) {
+				if (this.oauthService.clientTokenWillExpireSoon()) {
 					this.oauthService.orderClientAccessToken();
 				}
 			});

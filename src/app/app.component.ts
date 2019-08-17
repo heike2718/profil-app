@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { JWTService, STORAGE_KEY_JWT_STATE, STORAGE_KEY_JWT } from 'hewi-ng-lib';
+import { JWTService, STORAGE_KEY_JWT_STATE } from 'hewi-ng-lib';
 import { environment } from 'src/environments/environment';
 import { UserService } from './services/user.service';
 import { OauthService } from './services/oauth.service';
@@ -27,18 +27,17 @@ export class AppComponent implements OnInit {
 
 	ngOnInit() {
 
-		if (this.oauthService.clientWillExpireSoon()) {
-			this.oauthService.orderClientAccessToken();
-		}
-
-
 		// nach dem redirect vom AuthProvider ist das die Stelle, an der die Anwendung wieder ankommt.
 		// Daher hier redirect-URL parsen
 		const hash = window.location.hash;
 		if (hash && hash.indexOf('idToken') > 0) {
 			const authResult = this.jwtService.parseHash(hash);
 			this.authService.setSession(authResult);
+			if (this.oauthService.clientTokenWillExpireSoon()) {
+				this.oauthService.orderClientAccessToken();
+			}
 		} else {
+			this.oauthService.orderClientAccessToken();
 			if (this.isLoggedIn()) {
 				this.userService.loadUser();
 			}
