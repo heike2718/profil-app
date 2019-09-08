@@ -4,6 +4,7 @@
 
 ### ReleaseNotes
 
-__Release-3.0.0__: fixed 401 when an expired jwt is present
+* __Release 3.1.0:__ no sleep mode token refresh, serverside client error logs
+* __Release-3.0.0__: fixed 401 when an expired jwt is present
 s
-__Release-2.0.0__: automatically refresh client access token and JWT
+* __Release-2.0.0__: automatically refresh client access token and JWT
