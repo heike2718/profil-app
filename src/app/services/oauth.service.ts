@@ -27,7 +27,15 @@ export class OauthService {
 
 	orderClientAccessToken() {
 
-		const url = environment.apiUrl + '/clients/client/accesstoken';
+		const accessToken = localStorage.getItem(STORAGE_KEY_CLIENT_ACCESS_TOKEN);
+
+		let url = environment.apiUrl;
+
+		if (accessToken) {
+			url += '/accesstoken/' + accessToken;
+		} else {
+			url +=  '/clients/client/accesstoken';
+		}
 
 		this.http.get<ResponsePayload>(url).pipe(
 			publishLast(),
@@ -41,15 +49,16 @@ export class OauthService {
 		);
 	}
 
-	refreshJWT() {
+	refreshJWT(forced: boolean) {
 
 		const url = environment.apiUrl + '/jwt';
 
 		const _accessTokens = this.getAllClientAccessTokens();
 
 		const requestPayload: RefreshAccessTokenPayload = {
-			clientAccessToken: _accessTokens,
-			userRefreshToken: localStorage.getItem(STORAGE_KEY_JWT_REFRESH_TOKEN)
+			'clientAccessToken': _accessTokens,
+			'userRefreshToken': localStorage.getItem(STORAGE_KEY_JWT_REFRESH_TOKEN),
+			'force': forced
 		};
 
 		this.http.post(url, requestPayload).pipe(

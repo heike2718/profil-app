@@ -1,6 +1,8 @@
 export const SUFFIX_KEY_CLIENT_ACCESS_TOKEN = 'client_access_token';
 export const STORAGE_KEY_CLIENT_EXPIRES_AT = 'prfl_client_token_expires_at';
 export const STORAGE_KEY_CLIENT_ACCESS_TOKEN = 'prfl_client_access_token';
+export const STORAGE_KEY_HEARTBEAT = 'prfl_heartbeat';
+
 
 export interface OAuthAccessTokenPayload {
 	accessToken: string;
@@ -36,6 +38,7 @@ export interface User {
 export interface RefreshAccessTokenPayload {
 	clientAccessToken: string[];
 	userRefreshToken: string;
+	force: boolean;
 }
 
 export interface JWTPayload {
