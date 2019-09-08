@@ -38,6 +38,7 @@ export interface User {
 export interface RefreshAccessTokenPayload {
 	clientAccessToken: string[];
 	userRefreshToken: string;
+	force: boolean;
 }
 
 export interface JWTPayload {
