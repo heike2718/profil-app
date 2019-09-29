@@ -7,7 +7,7 @@ import { Subscription, interval, timer } from 'rxjs';
 import { OauthService } from '../services/oauth.service';
 import { SessionService } from '../services/session.service';
 import { STORAGE_KEY_HEARTBEAT } from '../shared/model/app-model';
-import { _localeFactory } from '@angular/core/src/application_module';
+
 const moment = moment_;
 
 @Component({
@@ -25,7 +25,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
 	private detectSleepSubscription: Subscription;
 
-	@ViewChild(NgbCollapse) navbarToggler: NgbCollapse;
+	@ViewChild(NgbCollapse, { static: true }) navbarToggler: NgbCollapse;
 
 	constructor(private sessionService: SessionService
 		, private oauthService: OauthService
