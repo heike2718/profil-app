@@ -31,10 +31,10 @@ export class OauthService {
 
 		let url = environment.apiUrl;
 
-		if (accessToken) {
-			url += '/accesstoken/' + accessToken;
-		} else {
+		if (this.clientTokenWillExpireSoon() || accessToken === null) {
 			url +=  '/clients/client/accesstoken';
+		} else {
+			url += '/accesstoken/' + accessToken;
 		}
 
 		this.http.get<ResponsePayload>(url).pipe(
