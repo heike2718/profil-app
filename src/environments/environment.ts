@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  version: '3.3.0',
+  version: '3.3.1',
   envName: 'Development',
   apiUrl: 'http://localhost:9000/authprovider',
   authUrl: 'http://localhost:4300',
