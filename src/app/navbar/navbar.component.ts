@@ -43,7 +43,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
 			const lastHeartbeat = this.getHeartbeatAsMoment();
 			const now = moment();
-			if (lastHeartbeat.add(10, 'seconds').isBefore(now)) {
+			if (lastHeartbeat !== null && lastHeartbeat.add(10, 'seconds').isBefore(now)) {
 				// this.oauthService.orderClientAccessToken();
 				// if (this.isLoggedIn) {
 				// 	this.oauthService.refreshJWT(true);
