@@ -13,5 +13,6 @@ export const environment = {
   signupRedirectUrl: 'http://localhost:4200',
   loginRedirectUrl: 'http://localhost:4200',
   consoleLogActive: true,
-  serverLogActive: true
+  serverLogActive: true,
+  loglevel: 1
 };
