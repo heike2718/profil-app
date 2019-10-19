@@ -8,5 +8,6 @@ export const environment = {
 	signupRedirectUrl: 'https://opa-wetterwachs.de/profil-app',
 	loginRedirectUrl: 'https://opa-wetterwachs.de/profil-app',
 	consoleLogActive: false,
-	serverLogActive: true
+	serverLogActive: true,
+	loglevel: 4
 };

@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, ErrorHandler } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NgLoggerModule, Level } from '@nsalaun/ng-logger';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { HewiNgLibModule } from 'hewi-ng-lib';
@@ -23,14 +22,6 @@ import { BaseDataComponent } from './profil/base-data.component';
 import { PasswordComponent } from './profil/password.component';
 import { FormErrorComponent } from './shared/components/form-error/form-error.component';
 
-
-// Set different log level depending on environment.
-let LOG_LEVEL = Level.ERROR;
-if (!environment.production) {
-	LOG_LEVEL = Level.DEBUG;
-}
-console.log('LOG_LEVEL=' + LOG_LEVEL);
-
 @NgModule({
 	declarations: [
 		AppComponent,
@@ -49,7 +40,6 @@ console.log('LOG_LEVEL=' + LOG_LEVEL);
 		HttpClientModule,
 		FormsModule,
 		ReactiveFormsModule,
-		NgLoggerModule.forRoot(LOG_LEVEL),
 		NgbModule,
 		NgbCollapseModule,
 		HewiNgLibModule

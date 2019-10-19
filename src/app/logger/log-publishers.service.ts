@@ -22,7 +22,6 @@ export class LogPublishersService {
 			this.publishers.push(new LogConsole());
 		}
 
-		// Create instance of LogWebApi Class
 		if (environment.serverLogActive) {
 			const url = environment.apiUrl + '/error';
 			this.publishers.push(new LogWebApi(this.http, url));
