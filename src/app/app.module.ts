@@ -7,11 +7,9 @@ import { HewiNgLibModule } from 'hewi-ng-lib';
 
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { environment } from 'src/environments/environment';
 import { routerConfig } from './router.config';
 import { HomeComponent } from './home/home.component';
 import { LoggedInGuard } from './shared/logged-in.guard';
-import { ErrorComponent } from './error/error.component';
 import { GlobalErrorHandlerService } from './error/global-error-handler.service';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './services/auth.interceptor';
@@ -27,7 +25,6 @@ import { FormErrorComponent } from './shared/components/form-error/form-error.co
 		AppComponent,
 		NavbarComponent,
 		HomeComponent,
-		ErrorComponent,
 		ProfilComponent,
 		LoadingComponent,
 		BaseDataComponent,
