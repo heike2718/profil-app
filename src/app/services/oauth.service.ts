@@ -6,9 +6,9 @@ import { environment } from '../../environments/environment';
 import { publishLast, refCount, map } from 'rxjs/operators';
 // tslint:disable-next-line:max-line-length
 import { OAuthAccessTokenPayload, STORAGE_KEY_CLIENT_ACCESS_TOKEN, STORAGE_KEY_CLIENT_EXPIRES_AT, RefreshAccessTokenPayload, JWTPayload, SUFFIX_KEY_CLIENT_ACCESS_TOKEN } from '../shared/model/app-model';
-import { ResponsePayload, STORAGE_KEY_JWT_REFRESH_TOKEN, STORAGE_KEY_JWT, STORAGE_KEY_JWT_EXPIRES_AT, MessagesService } from 'hewi-ng-lib';
+// tslint:disable-next-line:max-line-length
+import { ResponsePayload, STORAGE_KEY_JWT_REFRESH_TOKEN, STORAGE_KEY_JWT, STORAGE_KEY_JWT_EXPIRES_AT, MessagesService, LogService } from 'hewi-ng-lib';
 import { store } from '../shared/store/app-data';
-import { Logger } from '@nsalaun/ng-logger';
 import { SessionService } from './session.service';
 
 const moment = moment_;
@@ -22,7 +22,7 @@ export class OauthService {
 		, private httpErrorService: HttpErrorService
 		, private sessionService: SessionService
 		, private messagesService: MessagesService
-		, private logger: Logger
+		, private logger: LogService
 	) { }
 
 	orderClientAccessToken() {
@@ -32,7 +32,7 @@ export class OauthService {
 		let url = environment.apiUrl;
 
 		if (this.clientTokenWillExpireSoon() || accessToken === null) {
-			url +=  '/clients/client/accesstoken';
+			url += '/clients/client/accesstoken';
 		} else {
 			url += '/accesstoken/' + accessToken;
 		}
@@ -44,6 +44,9 @@ export class OauthService {
 			(respPayload: ResponsePayload) => {
 				const tokenPayload = respPayload.data as OAuthAccessTokenPayload;
 				this.storeClientToken(tokenPayload);
+
+				const msg = 'profilapp gestartet: loglevel=' + environment.loglevel;
+				this.logger.info(msg, tokenPayload.accessToken);
 			},
 			error => this.httpErrorService.handleError(error, 'orderClientAccessToken')
 		);

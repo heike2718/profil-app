@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { JWTService, STORAGE_KEY_JWT_STATE } from 'hewi-ng-lib';
+import { JWTService } from 'hewi-ng-lib';
 import { environment } from 'src/environments/environment';
-import { UserService } from './services/user.service';
 import { OauthService } from './services/oauth.service';
+import { SessionService } from './services/session.service';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -23,9 +23,15 @@ export class AppComponent implements OnInit {
 	constructor(private jwtService: JWTService
 		, private authService: AuthService
 		, private oauthService: OauthService
-		, private userService: UserService) { }
+		, private sessionService: SessionService) { }
 
 	ngOnInit() {
+
+		this.oauthService.orderClientAccessToken();
+
+		if (this.jwtService.isJWTExpired()) {
+			this.sessionService.clearSession();
+		}
 
 		// nach dem redirect vom AuthProvider ist das die Stelle, an der die Anwendung wieder ankommt.
 		// Daher hier redirect-URL parsen
@@ -36,21 +42,6 @@ export class AppComponent implements OnInit {
 			if (this.oauthService.clientTokenWillExpireSoon()) {
 				this.oauthService.orderClientAccessToken();
 			}
-		} else {
-			this.oauthService.orderClientAccessToken();
-			if (this.isLoggedIn()) {
-				this.userService.loadUser();
-			}
 		}
 	}
-
-	private isLoggedIn(): boolean {
-		const authState = localStorage.getItem(STORAGE_KEY_JWT_STATE);
-		if (authState && 'signup' === authState) {
-			return false;
-		}
-		return !this.jwtService.isJWTExpired();
-	}
-
-
 }

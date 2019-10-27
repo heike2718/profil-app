@@ -6,7 +6,6 @@ import { ResponsePayload, MessagesService, Message } from 'hewi-ng-lib';
 import { HttpErrorService } from '../error/http-error.service';
 import { environment } from '../../environments/environment';
 import { User, ChangePasswordPayload, ProfileDataPayload } from '../shared/model/app-model';
-import { Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'

@@ -6,8 +6,6 @@ import { Observable, Subscription } from 'rxjs';
 import { User, TwoPasswords, ChangePasswordPayload } from '../shared/model/app-model';
 import { store } from '../shared/store/app-data';
 import { UserService } from '../services/user.service';
-import { HttpErrorService } from '../error/http-error.service';
-import { MessagesService } from 'hewi-ng-lib';
 
 @Component({
 	selector: 'prfl-password',

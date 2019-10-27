@@ -14,7 +14,7 @@ import { MessagesService, Message } from 'hewi-ng-lib';
 })
 export class BaseDataComponent implements OnInit, OnDestroy {
 
-	user$: Observable<User>
+	user$: Observable<User>;
 
 	changeDataForm: FormGroup;
 
