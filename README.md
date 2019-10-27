@@ -4,6 +4,7 @@
 
 ### ReleaseNotes
 
+* __Release 3.3.2:__ Beim Aufruf der app wird jetzt immer ein neues client-access-token gezogen
 * __Release 3.3.1:__ migrated to angular 8
 * __Release 3.2.0:__ default role renamed: STANDARD
 * __Release 3.1.0:__ no sleep mode token refresh, serverside client error logs
