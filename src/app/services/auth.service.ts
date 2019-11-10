@@ -1,52 +1,73 @@
 import { Injectable } from '@angular/core';
 // tslint:disable-next-line:max-line-length
-import { STORAGE_KEY_JWT_REFRESH_TOKEN, STORAGE_KEY_JWT, STORAGE_KEY_JWT_EXPIRES_AT, STORAGE_KEY_JWT_STATE, AuthResult, JWTService } from 'hewi-ng-lib';
-import { Router } from '@angular/router';
+import { AuthResult, ResponsePayload } from 'hewi-ng-lib';
 import { store } from '../shared/store/app-data';
-import { UserService } from './user.service';
 import { environment } from '../../environments/environment';
-import { STORAGE_KEY_CLIENT_ACCESS_TOKEN } from '../shared/model/app-model';
+import { HttpClient } from '@angular/common/http';
+import { HttpErrorService } from '../error/http-error.service';
+import { map, publishLast, refCount } from 'rxjs/operators';
+import { AuthenticatedUser, STORAGE_KEY_FULL_NAME, STORAGE_KEY_SESSION_EXPIRES_AT } from '../shared/model/app-model';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class AuthService {
 
-	constructor(private userService: UserService
-		, private jwtService: JWTService
-		, private router: Router) { }
+	constructor(private httpClient: HttpClient
+		, private httpErrorService: HttpErrorService) { }
 
 
 	logIn() {
 
-		const accessToken = localStorage.getItem(STORAGE_KEY_CLIENT_ACCESS_TOKEN);
-		if (accessToken) {
-			const authUrl = this.jwtService.getLoginUrl(environment.authUrl, accessToken, environment.loginRedirectUrl, 'login', null);
-			window.location.href = authUrl;
+		const url = environment.apiUrl + '/auth/login';
 
-		}
+		this.httpClient.get(url).pipe(
+			map(res => <ResponsePayload>res),
+			publishLast(),
+			refCount()
+		).subscribe(
+			payload => {
+				window.location.href = payload.message.message;
+			},
+			(error => {
+				this.httpErrorService.handleError(error, 'logIn');
+			}));
 
 	}
 
-	setSession(authResult: AuthResult) {
+
+	createSession(authResult: AuthResult) {
 
 		window.location.hash = '';
 
-		// packen authResult ins LocalStorage, damit es ein refresh überlebt!
-		if (authResult.refreshToken) {
-			localStorage.setItem(STORAGE_KEY_JWT_REFRESH_TOKEN, authResult.refreshToken);
-			localStorage.setItem(STORAGE_KEY_JWT, authResult.idToken);
-			localStorage.setItem(STORAGE_KEY_JWT_EXPIRES_AT, JSON.stringify(authResult.expiresAt));
-			localStorage.setItem(STORAGE_KEY_JWT_STATE, authResult.state);
-		}
-
-
-		if ('signup' === authResult.state) {
-			store.updateAuthSignUpOutcome(true);
-			// TODO: Benutzerkonto anlegen
-		}
 		if ('login' === authResult.state) {
-			this.userService.loadUser();
+
+			const url = environment.apiUrl + '/auth/session';
+			store.updateBlockingIndicator(true);
+
+			this.httpClient.post(url, authResult.idToken).pipe(
+				map(res => <ResponsePayload>res),
+				publishLast(),
+				refCount()
+			).subscribe(
+				payload => {
+					if (payload.data) {
+						const authUser = payload.data as AuthenticatedUser;
+
+						localStorage.setItem(STORAGE_KEY_FULL_NAME, authUser.session.fullName);
+						localStorage.setItem(STORAGE_KEY_SESSION_EXPIRES_AT, JSON.stringify(authUser.session.expiresAt));
+
+						store.initUser(authUser.user);
+						store.updateBlockingIndicator(false);
+					}
+				},
+				(error => {
+					this.httpErrorService.handleError(error, 'getUser');
+				})
+			);
+
+
+
 		} else {
 			console.log('authResult.state = ' + authResult.state);
 		}

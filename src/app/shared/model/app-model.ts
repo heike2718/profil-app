@@ -1,8 +1,11 @@
-export const SUFFIX_KEY_CLIENT_ACCESS_TOKEN = 'client_access_token';
-export const STORAGE_KEY_CLIENT_EXPIRES_AT = 'prfl_client_token_expires_at';
-export const STORAGE_KEY_CLIENT_ACCESS_TOKEN = 'prfl_client_access_token';
-export const STORAGE_KEY_HEARTBEAT = 'prfl_heartbeat';
+export const STORAGE_KEY_FULL_NAME = 'full_name';
+export const STORAGE_KEY_SESSION_EXPIRES_AT = 'session_expires_at';
 
+
+export interface UserSession {
+	fullName: string;
+	expiresAt: number; // expiration in milliseconds after 01.01.1970
+}
 
 export interface OAuthAccessTokenPayload {
 	accessToken: string;
@@ -44,6 +47,11 @@ export interface RefreshAccessTokenPayload {
 export interface JWTPayload {
 	jwt: string;
 	expiresAtSeconds: number;
+}
+
+export interface AuthenticatedUser {
+	session: UserSession;
+	user: User;
 }
 
 export function isKnownUser(user: User): boolean {
