@@ -11,13 +11,14 @@ import { routerConfig } from './router.config';
 import { HomeComponent } from './home/home.component';
 import { LoggedInGuard } from './shared/logged-in.guard';
 import { GlobalErrorHandlerService } from './error/global-error-handler.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfilComponent } from './profil/profil.component';
 import { LoadingComponent } from './loading/loading.component';
 import { BaseDataComponent } from './profil/base-data.component';
 import { PasswordComponent } from './profil/password.component';
 import { FormErrorComponent } from './shared/components/form-error/form-error.component';
+import { AuthInterceptor } from './services/auth.interceptor';
 
 @NgModule({
 	declarations: [
@@ -43,6 +44,11 @@ import { FormErrorComponent } from './shared/components/form-error/form-error.co
 	providers: [
 		GlobalErrorHandlerService,
 		{ provide: ErrorHandler, useClass: GlobalErrorHandlerService },
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: AuthInterceptor,
+			multi: true
+		},
 		LoggedInGuard
 	],
 	bootstrap: [AppComponent]

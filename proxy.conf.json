@@ -1,0 +1,8 @@
+{
+  "/profil-api/*": {
+    "target": "http://localhost:9600",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+}

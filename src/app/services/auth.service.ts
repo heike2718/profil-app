@@ -6,7 +6,9 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorService } from '../error/http-error.service';
 import { map, publishLast, refCount } from 'rxjs/operators';
-import { AuthenticatedUser, STORAGE_KEY_FULL_NAME, STORAGE_KEY_SESSION_EXPIRES_AT } from '../shared/model/app-model';
+// tslint:disable-next-line:max-line-length
+import { AuthenticatedUser, STORAGE_KEY_FULL_NAME, STORAGE_KEY_SESSION_EXPIRES_AT, STORAGE_KEY_DEV_SESSION_ID } from '../shared/model/app-model';
+import { Router } from '@angular/router';
 
 @Injectable({
 	providedIn: 'root'
@@ -14,7 +16,8 @@ import { AuthenticatedUser, STORAGE_KEY_FULL_NAME, STORAGE_KEY_SESSION_EXPIRES_A
 export class AuthService {
 
 	constructor(private httpClient: HttpClient
-		, private httpErrorService: HttpErrorService) { }
+		, private httpErrorService: HttpErrorService
+		, private router: Router) { }
 
 
 	logIn() {
@@ -57,8 +60,13 @@ export class AuthService {
 						localStorage.setItem(STORAGE_KEY_FULL_NAME, authUser.session.fullName);
 						localStorage.setItem(STORAGE_KEY_SESSION_EXPIRES_AT, JSON.stringify(authUser.session.expiresAt));
 
+						if (authUser.session.sessionId && !environment.production) {
+							localStorage.setItem(STORAGE_KEY_DEV_SESSION_ID, authUser.session.sessionId);
+						}
+
 						store.initUser(authUser.user);
 						store.updateBlockingIndicator(false);
+						this.router.navigateByUrl('/profil');
 					}
 				},
 				(error => {
