@@ -20,9 +20,7 @@ export class AppComponent implements OnInit {
 	logo = environment.assetsUrl + '/mja_logo.png';
 
 	constructor(private jwtService: JWTService
-		, private authService: AuthService
-		, private sessionService: SessionService
-		, private logger: LogService) { }
+		, private authService: AuthService) { }
 
 	ngOnInit() {
 
@@ -36,10 +34,6 @@ export class AppComponent implements OnInit {
 		localStorage.removeItem('jwt_rt');
 		localStorage.removeItem('jwt_at');
 
-		if (this.sessionService.sessionExpired()) {
-			this.logger.info('session has expired');
-			this.sessionService.clearSession();
-		}
 
 		// nach dem redirect vom AuthProvider ist das die Stelle, an der die Anwendung wieder ankommt.
 		// Daher hier redirect-URL parsen
