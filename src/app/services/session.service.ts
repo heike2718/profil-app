@@ -35,6 +35,7 @@ export class SessionService {
 			return true;
 		}
 		const expired = moment().isAfter(expiration);
+
 		return expired;
 	}
 

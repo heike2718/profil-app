@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // tslint:disable-next-line:max-line-length
-import { AuthResult, ResponsePayload } from 'hewi-ng-lib';
+import { AuthResult, ResponsePayload, LogService } from 'hewi-ng-lib';
 import { store } from '../shared/store/app-data';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -9,6 +9,7 @@ import { map, publishLast, refCount } from 'rxjs/operators';
 // tslint:disable-next-line:max-line-length
 import { AuthenticatedUser, STORAGE_KEY_FULL_NAME, STORAGE_KEY_SESSION_EXPIRES_AT, STORAGE_KEY_DEV_SESSION_ID } from '../shared/model/app-model';
 import { Router } from '@angular/router';
+import { SessionService } from './session.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -17,7 +18,9 @@ export class AuthService {
 
 	constructor(private httpClient: HttpClient
 		, private httpErrorService: HttpErrorService
-		, private router: Router) { }
+		, private sessionService: SessionService
+		, private router: Router
+		, private logger: LogService) { }
 
 
 	logIn() {
@@ -38,6 +41,38 @@ export class AuthService {
 
 	}
 
+	logOut() {
+
+		let url = environment.apiUrl;
+
+		const sessionId = localStorage.getItem(STORAGE_KEY_DEV_SESSION_ID);
+
+
+		if (sessionId) {
+			url = url + '/auth/dev/logout/' + sessionId;
+		} else {
+			url = url + '/auth/dev/logout/unknown';
+		}
+
+		if (environment.production) {
+			url = environment.apiUrl + '/auth/logout';
+		}
+
+		this.logger.debug('url=' + url);
+
+		this.httpClient.delete(url).pipe(
+			map(res => <ResponsePayload>res),
+			publishLast(),
+			refCount()
+		).subscribe(
+			_payload => {
+				this.sessionService.clearSession();
+			},
+			(error => {
+				this.httpErrorService.handleError(error, 'logOut');
+			}));
+
+	}
 
 	createSession(authResult: AuthResult) {
 

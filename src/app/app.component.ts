@@ -37,6 +37,7 @@ export class AppComponent implements OnInit {
 		localStorage.removeItem('jwt_at');
 
 		if (this.sessionService.sessionExpired()) {
+			this.logger.info('session has expired');
 			this.sessionService.clearSession();
 		}
 
@@ -45,7 +46,6 @@ export class AppComponent implements OnInit {
 		const hash = window.location.hash;
 		if (hash && hash.indexOf('idToken') > 0) {
 			const authResult = this.jwtService.parseHash(hash);
-			this.logger.info(authResult.idToken);
 			this.authService.createSession(authResult);
 		}
 	}

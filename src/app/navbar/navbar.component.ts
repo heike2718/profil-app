@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../services/auth.service';
-import { SessionService } from '../services/session.service';
 import { STORAGE_KEY_FULL_NAME } from '../shared/model/app-model';
+import { SessionService } from '../services/session.service';
 
 @Component({
 	selector: 'prfl-navbar',
@@ -15,8 +15,8 @@ export class NavbarComponent {
 
 	@ViewChild(NgbCollapse, { static: true }) navbarToggler: NgbCollapse;
 
-	constructor(private sessionService: SessionService
-		, private authService: AuthService) { }
+	constructor(private authService: AuthService
+		, private sessionService: SessionService) { }
 
 	collapseNav() {
 		if (this.navbarToggler) {
@@ -34,7 +34,9 @@ export class NavbarComponent {
 	}
 
 	logout() {
-		this.sessionService.clearSession();
+		this.authService.logOut();
+
+		// this.sessionService.clearSession();
 	}
 
 	login() {
