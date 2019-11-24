@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { STORAGE_KEY_JWT_STATE, JWTService } from 'hewi-ng-lib';
+import { STORAGE_KEY_FULL_NAME } from '../shared/model/app-model';
 
 @Component({
 	selector: 'prfl-home',
@@ -8,18 +8,19 @@ import { STORAGE_KEY_JWT_STATE, JWTService } from 'hewi-ng-lib';
 })
 export class HomeComponent implements OnInit {
 
-	constructor(private jwtService: JWTService) { }
+	constructor() { }
 
 	ngOnInit() { }
 
 	isLoggedIn(): boolean {
 
-		const authState = localStorage.getItem(STORAGE_KEY_JWT_STATE);
-		if (authState && 'signup' === authState) {
-			return false;
+		const user = localStorage.getItem(STORAGE_KEY_FULL_NAME);
+
+		if (user !== null) {
+			return true;
 		}
 
-		return !this.jwtService.isJWTExpired();
+		return false;
 	}
 
 

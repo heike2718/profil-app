@@ -23,7 +23,7 @@ export class LogPublishersService {
 		}
 
 		if (environment.serverLogActive) {
-			const url = environment.apiUrl + '/error';
+			const url = environment.apiUrl + '/log';
 			this.publishers.push(new LogWebApi(this.http, url));
 		}
 	}

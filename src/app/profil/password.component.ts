@@ -28,6 +28,10 @@ export class PasswordComponent implements OnInit, OnDestroy {
 
 	private blockingIndicatorSubscription: Subscription;
 
+	private userSubscription: Subscription;
+
+	private cachedUser: User;
+
 	showBlockingIndicator: boolean;
 
 	constructor(private fb: FormBuilder
@@ -49,6 +53,14 @@ export class PasswordComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.user$ = store.user$;
+
+		this.userSubscription = this.user$.subscribe(
+			user => {
+				this.cachedUser = user;
+			}
+
+		);
+
 
 		this.blockingIndicatorSubscription = store.blockingIndicator$.subscribe(
 			value => this.showBlockingIndicator = value
@@ -73,7 +85,7 @@ export class PasswordComponent implements OnInit, OnDestroy {
 			'twoPasswords': _twoPasswords
 		};
 
-		this.userService.changePassword(credentials);
+		this.userService.changePassword(credentials, this.cachedUser);
 	}
 }
 

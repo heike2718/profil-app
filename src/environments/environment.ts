@@ -4,15 +4,13 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false,
-  version: '3.3.2',
-  envName: 'Development',
-  apiUrl: 'http://localhost:9000/authprovider',
-  authUrl: 'http://localhost:4300',
-  assetsUrl: 'assets',
-  signupRedirectUrl: 'http://localhost:4200',
-  loginRedirectUrl: 'http://localhost:4200',
-  consoleLogActive: true,
-  serverLogActive: true,
-  loglevel: 1
+        production: false,
+        version: '3.3.2',
+        envName: 'Development',
+        apiUrl: 'http://localhost:9600/profil-api',
+        assetsUrl: 'assets',
+        loginRedirectUrl: 'http://localhost:4200',
+        consoleLogActive: true,
+        serverLogActive: true,
+        loglevel: 2
 };
