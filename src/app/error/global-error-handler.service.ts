@@ -2,10 +2,9 @@ import { Injectable, ErrorHandler, Injector } from '@angular/core';
 // import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LogService, MessagesService } from 'hewi-ng-lib';
-import { SessionService } from '../services/session.service';
 import { LogPublishersService } from '../logger/log-publishers.service';
 import { environment } from 'src/environments/environment.qs';
-import { STORAGE_KEY_CLIENT_ACCESS_TOKEN } from '../shared/model/app-model';
+import { STORAGE_KEY_ID_REFERENCE } from '../shared/model/app-model';
 
 @Injectable({
 	providedIn: 'root'
@@ -13,7 +12,6 @@ import { STORAGE_KEY_CLIENT_ACCESS_TOKEN } from '../shared/model/app-model';
 export class GlobalErrorHandlerService implements ErrorHandler {
 
 	private logService: LogService;
-	private sessionService: SessionService;
 
 	constructor(private injector: Injector) {
 
@@ -22,12 +20,10 @@ export class GlobalErrorHandlerService implements ErrorHandler {
 		const logPublishersService = this.injector.get(LogPublishersService);
 		this.logService = this.injector.get(LogService);
 
-		this.logService.initLevel(environment.loglevel);
+		const loglevel = environment.loglevel;
+		this.logService.initLevel(loglevel);
 		this.logService.registerPublishers(logPublishersService.publishers);
-		this.logService.info('logging initialized: loglevel=' + environment.loglevel);
-
-		this.sessionService = this.injector.get(SessionService);
-		this.logService.info('sessionService initialized');
+		this.logService.info('logging initialized: loglevel=' + loglevel);
 
 	}
 
@@ -40,13 +36,15 @@ export class GlobalErrorHandlerService implements ErrorHandler {
 		}
 
 		// try sending an Error-Log to the Server
-		this.logService.error(message, this.sessionService.getClientAccessToken());
+
+		const idReference = localStorage.getItem(STORAGE_KEY_ID_REFERENCE);
+
+		this.logService.error(message, null);
 
 		if (error instanceof HttpErrorResponse) {
 			this.logService.debug('das sollte nicht vorkommen, da diese Errors von einem der services behandelt werden');
 		} else {
-			const accessToken = sessionStorage.getItem(STORAGE_KEY_CLIENT_ACCESS_TOKEN);
-			this.logService.error('Unerwarteter Fehler: ' + error.message, accessToken);
+			this.logService.error('Unerwarteter Fehler: ' + error.message, idReference);
 		}
 
 		this.injector.get(MessagesService).error(message);

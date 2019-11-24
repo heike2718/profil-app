@@ -30,6 +30,8 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 
 	private blockingIndicatorSubscription: Subscription;
 
+	private cachedUser: User;
+
 	showBlockingIndicator: boolean;
 
 	constructor(private fb: FormBuilder
@@ -55,6 +57,7 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 
 		this.userSubscription = this.user$.subscribe(
 			user => {
+				this.cachedUser = user;
 				this.changeDataForm.patchValue(user);
 			}
 
@@ -83,12 +86,12 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 		};
 
 		this.messagesService.clear();
-		this.userService.changeProfileData(_data);
+		this.userService.changeProfileData(_data, this.cachedUser);
 
 	}
 
 	cancel(): void {
-		this.userService.loadUser();
+		this.userService.resetUser(this.cachedUser);
 		this.messagesService.clear();
 	}
 

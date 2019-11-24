@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, publishLast, refCount } from 'rxjs/operators';
 import { store } from '../shared/store/app-data';
-import { ResponsePayload, MessagesService, Message } from 'hewi-ng-lib';
+import { ResponsePayload, MessagesService, Message, LogService } from 'hewi-ng-lib';
 import { HttpErrorService } from '../error/http-error.service';
 import { environment } from '../../environments/environment';
-import { User, ChangePasswordPayload, ProfileDataPayload } from '../shared/model/app-model';
+// tslint:disable-next-line:max-line-length
+import { User, ChangePasswordPayload, ProfileDataPayload, AuthenticatedUser, STORAGE_KEY_FULL_NAME, STORAGE_KEY_SESSION_EXPIRES_AT, STORAGE_KEY_DEV_SESSION_ID } from '../shared/model/app-model';
 
 @Injectable({
 	providedIn: 'root'
@@ -14,33 +15,15 @@ export class UserService {
 
 	constructor(private http: HttpClient
 		, private httpErrorService: HttpErrorService
-		, private messagesService: MessagesService) { }
+		, private messagesService: MessagesService
+		, private logService: LogService) { }
 
 
-	loadUser(): void {
-
-		const url = environment.apiUrl + '/profiles/profile';
-		store.updateBlockingIndicator(true);
-
-		this.http.get(url).pipe(
-			map(res => <ResponsePayload>res),
-			publishLast(),
-			refCount()
-		).subscribe(
-			payload => {
-				if (payload.data) {
-					const user = payload.data as User;
-					store.initUser(user);
-					store.updateBlockingIndicator(false);
-				}
-			},
-			(error => {
-				this.httpErrorService.handleError(error, 'getUser');
-			})
-		);
+	resetUser(user: User): void {
+		store.initUser(user);
 	}
 
-	changePassword(changePasswordPayload: ChangePasswordPayload): void {
+	changePassword(changePasswordPayload: ChangePasswordPayload, cachedUser: User): void {
 
 		const url = environment.apiUrl + '/profiles/profile/password';
 		store.updateBlockingIndicator(true);
@@ -51,19 +34,36 @@ export class UserService {
 			refCount()
 		).subscribe(
 			payload => {
-				if (payload.message) {
-					const _message: Message = payload.message;
-					this.messagesService.info(_message.message);
+				if (payload !== null) {
+					if (payload.data) {
+						const authUser = payload.data as AuthenticatedUser;
+						localStorage.setItem(STORAGE_KEY_SESSION_EXPIRES_AT, JSON.stringify(authUser.session.expiresAt));
+
+						if (authUser.session.sessionId && !environment.production) {
+							localStorage.setItem(STORAGE_KEY_DEV_SESSION_ID, authUser.session.sessionId);
+						}
+					}
+					if (payload.message) {
+						const _message: Message = payload.message;
+						this.messagesService.info(_message.message);
+					}
+					store.updateBlockingIndicator(false);
+				} else {
+					store.updateBlockingIndicator(false);
+					this.messagesService.error('Es ist ein unerwarteter Fehler aufgetreten. Bitte schreiben Sie eine Mail an info@egladil.de.');
+					this.logService.error('changeProfileData: response payload war null');
+					store.initUser(cachedUser);
 				}
-				store.updateBlockingIndicator(false);
+
 			},
 			(error => {
+				store.updateBlockingIndicator(false);
 				this.httpErrorService.handleError(error, 'changePassword');
 			})
 		);
 	}
 
-	changeProfileData(profileDataPayload: ProfileDataPayload): void {
+	changeProfileData(profileDataPayload: ProfileDataPayload, cachedUser: User): void {
 
 		const url = environment.apiUrl + '/profiles/profile/data';
 		store.updateBlockingIndicator(true);
@@ -74,17 +74,36 @@ export class UserService {
 			refCount()
 		).subscribe(
 			payload => {
-				if (payload.data) {
-					const user = payload.data as User;
-					store.initUser(user);
+				if (payload !== null) {
+					if (payload.data) {
+						const authUser = payload.data as AuthenticatedUser;
+
+						if (authUser.session.fullName !== null) {
+							localStorage.setItem(STORAGE_KEY_FULL_NAME, authUser.session.fullName);
+						}
+						localStorage.setItem(STORAGE_KEY_SESSION_EXPIRES_AT, JSON.stringify(authUser.session.expiresAt));
+
+						if (authUser.session.sessionId && !environment.production) {
+							localStorage.setItem(STORAGE_KEY_DEV_SESSION_ID, authUser.session.sessionId);
+						}
+
+						store.initUser(authUser.user);
+					}
+					if (payload.message) {
+						const _message: Message = payload.message;
+						this.messagesService.info(_message.message);
+					}
+					store.updateBlockingIndicator(false);
+				} else {
+					store.updateBlockingIndicator(false);
+					this.messagesService.error('Es ist ein unerwarteter Fehler aufgetreten. Bitte schreiben Sie eine Mail an info@egladil.de.');
+					this.logService.error('changeProfileData: response payload war null');
+					store.initUser(cachedUser);
 				}
-				if (payload.message) {
-					const _message: Message = payload.message;
-					this.messagesService.info(_message.message);
-				}
-				store.updateBlockingIndicator(false);
+
 			},
 			(error => {
+				store.updateBlockingIndicator(false);
 				this.httpErrorService.handleError(error, 'changeProfileData');
 			})
 		);
