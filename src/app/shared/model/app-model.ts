@@ -1,12 +1,15 @@
+export const STORAGE_KEY_ID_REFERENCE = 'id_reference';
 export const STORAGE_KEY_FULL_NAME = 'full_name';
 export const STORAGE_KEY_SESSION_EXPIRES_AT = 'session_expires_at';
 export const STORAGE_KEY_DEV_SESSION_ID = 'dev_session_id';
 
 
+
 export interface UserSession {
 	sessionId?: string;
-	fullName: string;
+	fullName?: string;
 	expiresAt: number; // expiration in milliseconds after 01.01.1970
+	idReference: string;
 }
 
 export interface OAuthAccessTokenPayload {

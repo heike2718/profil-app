@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpErrorService } from '../error/http-error.service';
 import { map, publishLast, refCount } from 'rxjs/operators';
 // tslint:disable-next-line:max-line-length
-import { AuthenticatedUser, STORAGE_KEY_FULL_NAME, STORAGE_KEY_SESSION_EXPIRES_AT, STORAGE_KEY_DEV_SESSION_ID } from '../shared/model/app-model';
+import { AuthenticatedUser, STORAGE_KEY_FULL_NAME, STORAGE_KEY_SESSION_EXPIRES_AT, STORAGE_KEY_DEV_SESSION_ID, STORAGE_KEY_ID_REFERENCE } from '../shared/model/app-model';
 import { Router } from '@angular/router';
 import { SessionService } from './session.service';
 
@@ -68,8 +68,9 @@ export class AuthService {
 			_payload => {
 				this.sessionService.clearSession();
 			},
-			(error => {
-				this.httpErrorService.handleError(error, 'logOut');
+			(_error => {
+				// ist nicht schlimm: die session bleibt auf dem Server
+				this.sessionService.clearSession();
 			}));
 
 	}
@@ -94,6 +95,7 @@ export class AuthService {
 
 						localStorage.setItem(STORAGE_KEY_FULL_NAME, authUser.session.fullName);
 						localStorage.setItem(STORAGE_KEY_SESSION_EXPIRES_AT, JSON.stringify(authUser.session.expiresAt));
+						localStorage.setItem(STORAGE_KEY_ID_REFERENCE, authUser.session.idReference);
 
 						if (authUser.session.sessionId && !environment.production) {
 							localStorage.setItem(STORAGE_KEY_DEV_SESSION_ID, authUser.session.sessionId);
@@ -105,7 +107,7 @@ export class AuthService {
 					}
 				},
 				(error => {
-					this.httpErrorService.handleError(error, 'getUser');
+					this.httpErrorService.handleError(error, 'createSession');
 				})
 			);
 

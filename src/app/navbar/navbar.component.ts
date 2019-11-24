@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../services/auth.service';
-import { STORAGE_KEY_FULL_NAME } from '../shared/model/app-model';
+import { STORAGE_KEY_SESSION_EXPIRES_AT } from '../shared/model/app-model';
 import { SessionService } from '../services/session.service';
 
 @Component({
@@ -29,8 +29,8 @@ export class NavbarComponent {
 	}
 
 	isLoggedOut(): boolean {
-		const fullName = localStorage.getItem(STORAGE_KEY_FULL_NAME);
-		return !fullName;
+		const expiresAt = localStorage.getItem(STORAGE_KEY_SESSION_EXPIRES_AT);
+		return !expiresAt;
 	}
 
 	logout() {

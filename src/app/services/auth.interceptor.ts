@@ -9,7 +9,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
 	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-		if (!environment.production) {
+		if (environment.production) {
 			return next.handle(req);
 		}
 
@@ -18,7 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
 		const sessionId = localStorage.getItem(STORAGE_KEY_DEV_SESSION_ID);
 		if (sessionId) {
 			const cloned = req.clone({
-				headers: req.headers.set('Authorization', 'Bearer ' + sessionId)
+				headers: req.headers.set('X-SESSIONID', sessionId)
 			});
 			return next.handle(cloned);
 
