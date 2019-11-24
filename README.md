@@ -4,6 +4,7 @@
 
 ### ReleaseNotes
 
+* __Release 4.0.0:__ server side session handling and replace localStorage with session cookies
 * __Release 3.3.2:__ Beim Aufruf der app wird jetzt immer ein neues client-access-token gezogen
 * __Release 3.3.1:__ migrated to angular 8
 * __Release 3.2.0:__ default role renamed: STANDARD
