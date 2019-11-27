@@ -33,6 +33,10 @@ export class AppComponent implements OnInit {
 		localStorage.removeItem('jwt_state');
 		localStorage.removeItem('jwt_rt');
 		localStorage.removeItem('jwt_at');
+		localStorage.removeItem('id_reference');
+		localStorage.removeItem('session_expires_at');
+		localStorage.removeItem('dev_session_id');
+		localStorage.removeItem('full_name');
 
 
 		// nach dem redirect vom AuthProvider ist das die Stelle, an der die Anwendung wieder ankommt.

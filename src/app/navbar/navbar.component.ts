@@ -1,8 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../services/auth.service';
-import { STORAGE_KEY_SESSION_EXPIRES_AT } from '../shared/model/app-model';
-import { SessionService } from '../services/session.service';
+import { STORAGE_KEY_ID_REFERENCE } from '../shared/model/app-model';
 
 @Component({
 	selector: 'prfl-navbar',
@@ -15,8 +14,7 @@ export class NavbarComponent {
 
 	@ViewChild(NgbCollapse, { static: true }) navbarToggler: NgbCollapse;
 
-	constructor(private authService: AuthService
-		, private sessionService: SessionService) { }
+	constructor(private authService: AuthService) { }
 
 	collapseNav() {
 		if (this.navbarToggler) {
@@ -29,8 +27,8 @@ export class NavbarComponent {
 	}
 
 	isLoggedOut(): boolean {
-		const expiresAt = localStorage.getItem(STORAGE_KEY_SESSION_EXPIRES_AT);
-		return !expiresAt;
+		const idReference = localStorage.getItem(STORAGE_KEY_ID_REFERENCE);
+		return !idReference;
 	}
 
 	logout() {
