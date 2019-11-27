@@ -1,7 +1,7 @@
-export const STORAGE_KEY_ID_REFERENCE = 'id_reference';
-export const STORAGE_KEY_FULL_NAME = 'full_name';
-export const STORAGE_KEY_SESSION_EXPIRES_AT = 'session_expires_at';
-export const STORAGE_KEY_DEV_SESSION_ID = 'dev_session_id';
+export const STORAGE_KEY_ID_REFERENCE = 'prf_id_reference';
+export const STORAGE_KEY_FULL_NAME = 'prf_full_name';
+export const STORAGE_KEY_SESSION_EXPIRES_AT = 'prf_session_expires_at';
+export const STORAGE_KEY_DEV_SESSION_ID = 'prf_dev_session_id';
 
 
 
