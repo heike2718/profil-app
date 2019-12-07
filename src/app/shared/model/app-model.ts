@@ -49,11 +49,6 @@ export interface RefreshAccessTokenPayload {
 	force: boolean;
 }
 
-export interface JWTPayload {
-	jwt: string;
-	expiresAtSeconds: number;
-}
-
 export interface AuthenticatedUser {
 	session: UserSession;
 	user: User;
