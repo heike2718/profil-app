@@ -29,7 +29,7 @@ export class UserService {
 		store.updateBlockingIndicator(true);
 
 		this.http.put(url, changePasswordPayload).pipe(
-			map(res => <ResponsePayload>res),
+			map(res => res as ResponsePayload),
 			publishLast(),
 			refCount()
 		).subscribe(
@@ -69,7 +69,7 @@ export class UserService {
 		store.updateBlockingIndicator(true);
 
 		this.http.put(url, profileDataPayload).pipe(
-			map(res => <ResponsePayload>res),
+			map(res => res as ResponsePayload),
 			publishLast(),
 			refCount()
 		).subscribe(
