@@ -14,7 +14,6 @@ import { GlobalErrorHandlerService } from './error/global-error-handler.service'
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProfilComponent } from './profil/profil.component';
-import { LoadingComponent } from './loading/loading.component';
 import { BaseDataComponent } from './profil/base-data.component';
 import { PasswordComponent } from './profil/password.component';
 import { FormErrorComponent } from './shared/components/form-error/form-error.component';
@@ -26,7 +25,6 @@ import { AuthInterceptor } from './services/auth.interceptor';
 		NavbarComponent,
 		HomeComponent,
 		ProfilComponent,
-		LoadingComponent,
 		BaseDataComponent,
 		PasswordComponent,
 		FormErrorComponent

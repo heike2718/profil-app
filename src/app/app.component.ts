@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { JWTService, LogService } from 'hewi-ng-lib';
+import { JWTService } from 'hewi-ng-lib';
 import { environment } from 'src/environments/environment';
-import { SessionService } from './services/session.service';
+import { store } from './shared/store/app-data';
 
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -20,9 +20,12 @@ export class AppComponent implements OnInit {
 	logo = environment.assetsUrl + '/mja_logo.png';
 
 	constructor(private jwtService: JWTService
-		, private authService: AuthService) { }
+		, private authService: AuthService
+		) { }
 
 	ngOnInit() {
+
+		store.updateBlockingIndicator(false);
 
 		// nach dem redirect vom AuthProvider ist das die Stelle, an der die Anwendung wieder ankommt.
 		// Daher hier redirect-URL parsen

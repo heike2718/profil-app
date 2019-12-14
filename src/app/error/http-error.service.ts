@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MessagesService, Message, WARN, ERROR, LogService } from 'hewi-ng-lib';
 import { SessionService } from '../services/session.service';
-import { store } from '../shared/store/app-data';
 
 
 @Injectable({
@@ -16,8 +15,6 @@ export class HttpErrorService {
 
 
 	handleError(error: HttpErrorResponse, context: string) {
-
-		store.updateBlockingIndicator(false);
 
 		if (error instanceof ErrorEvent) {
 			this.logger.error(context + ': ErrorEvent occured - ' + JSON.stringify(error));
@@ -48,17 +45,9 @@ export class HttpErrorService {
 
 	private extractMessageObject(error: HttpErrorResponse): Message {
 
-		if (error['_body']) {
-			// so bekommt man den body als nettes kleines JSON-Objekt :)
-			const body = JSON.parse(error['_body']);
-			if (body['message']) {
-				return <Message>body['message'];
-			}
-		}
-
-		if (error['error']) {
-			const err = error['error'];
-			return <Message>err['message'];
+		if (error.error) {
+			const err = error.error;
+			return err.message as Message;
 		}
 
 		return null;

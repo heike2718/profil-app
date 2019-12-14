@@ -24,6 +24,8 @@ export class DataStore {
 
 	private blockingIndicatorSubject = new BehaviorSubject<boolean>(false);
 
+	private csrfTokenSubject = new BehaviorSubject<string>('');
+
 	user$: Observable<User> = this.userSubject.asObservable();
 
 	authSignUpOutcome$: Observable<boolean> = this.authSignUpOutcomeSubject.asObservable();
@@ -31,6 +33,8 @@ export class DataStore {
 	clientAccessToken$: Observable<string> = this.clientAccessTokenSubject.asObservable();
 
 	blockingIndicator$: Observable<boolean> = this.blockingIndicatorSubject.asObservable();
+
+	csrfToken$: Observable<string> = this.csrfTokenSubject.asObservable();
 
 
 	updateAuthSignUpOutcome(success: boolean) {
@@ -48,8 +52,13 @@ export class DataStore {
 	clearUser(): void {
 		this.userSubject.next(initialUser);
 	}
+
 	updateClientAccessToken(token: string) {
 		this.clientAccessTokenSubject.next(token);
+	}
+
+	initCsrfToken(token: string) {
+		this.csrfTokenSubject.next(token);
 	}
 }
 
