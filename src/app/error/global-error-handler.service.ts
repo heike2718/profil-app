@@ -1,5 +1,4 @@
 import { Injectable, ErrorHandler, Injector } from '@angular/core';
-// import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LogService, MessagesService } from 'hewi-ng-lib';
 import { LogPublishersService } from '../logger/log-publishers.service';
@@ -48,8 +47,5 @@ export class GlobalErrorHandlerService implements ErrorHandler {
 		}
 
 		this.injector.get(MessagesService).error(message);
-
-		// const router = this.injector.get(Router);
-		// router.navigateByUrl('/error');
 	}
 }

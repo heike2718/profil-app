@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { store } from '../shared/store/app-data';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { User } from '../shared/model/app-model';
 
 @Component({
@@ -8,7 +8,7 @@ import { User } from '../shared/model/app-model';
 	templateUrl: './profil.component.html',
 	styleUrls: ['./profil.component.css']
 })
-export class ProfilComponent implements OnInit {
+export class ProfilComponent implements OnInit, OnDestroy {
 
 	user$: Observable<User>;
 
@@ -16,13 +16,28 @@ export class ProfilComponent implements OnInit {
 
 	passwordAktiv: boolean;
 
+	loading = true;
+
+	private userSubscription: Subscription;
+
 	constructor() {
-		this.user$ = store.user$;
 	}
 
 	ngOnInit() {
+		this.user$ = store.user$;
+
+		this.userSubscription = this.user$.subscribe(
+			_user => this.loading = false
+		);
+
 		this.profilAktiv = true;
 		this.passwordAktiv = false;
+	}
+
+	ngOnDestroy() {
+		if (this.userSubscription) {
+			this.userSubscription.unsubscribe();
+		}
 	}
 
 

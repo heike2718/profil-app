@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, AbstractControl, Validators } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
-import { User, ProfileDataPayload, isKnownUser } from '../shared/model/app-model';
+import { User, ProfileDataPayload } from '../shared/model/app-model';
 import { store } from '../shared/store/app-data';
 import { emailValidator } from '../shared/validation/app.validators';
 import { UserService } from '../services/user.service';
-import { MessagesService, Message } from 'hewi-ng-lib';
+import { MessagesService } from 'hewi-ng-lib';
 
 @Component({
 	selector: 'prfl-base-data',
@@ -30,7 +30,11 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 
 	private blockingIndicatorSubscription: Subscription;
 
+	private csrfTokenSubscription: Subscription;
+
 	private cachedUser: User;
+
+	private csrfToken = '';
 
 	showBlockingIndicator: boolean;
 
@@ -39,21 +43,21 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 		, private messagesService: MessagesService) {
 
 		this.changeDataForm = this.fb.group({
-			'loginName': ['', [Validators.required]],
-			'vorname': ['', [Validators.required]],
-			'nachname': ['', [Validators.required]],
-			'email': ['', [Validators.required, emailValidator]]
+			loginName: ['', [Validators.required]],
+			vorname: ['', [Validators.required]],
+			nachname: ['', [Validators.required]],
+			email: ['', [Validators.required, emailValidator]]
 		});
 
-		this.loginName = this.changeDataForm.controls['loginName'];
-		this.vorname = this.changeDataForm.controls['vorname'];
-		this.nachname = this.changeDataForm.controls['nachname'];
-		this.email = this.changeDataForm.controls['email'];
-
-		this.user$ = store.user$;
+		this.loginName = this.changeDataForm.controls.loginName;
+		this.vorname = this.changeDataForm.controls.vorname;
+		this.nachname = this.changeDataForm.controls.nachname;
+		this.email = this.changeDataForm.controls.email;
 	}
 
 	ngOnInit() {
+
+		this.user$ = store.user$;
 
 		this.userSubscription = this.user$.subscribe(
 			user => {
@@ -66,6 +70,10 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 		this.blockingIndicatorSubscription = store.blockingIndicator$.subscribe(
 			value => this.showBlockingIndicator = value
 		);
+
+		this.csrfTokenSubscription = store.csrfToken$.subscribe(
+			token => this.csrfToken = token
+		);
 	}
 
 	ngOnDestroy() {
@@ -75,18 +83,21 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 		if (this.blockingIndicatorSubscription) {
 			this.blockingIndicatorSubscription.unsubscribe();
 		}
+		if (this.csrfTokenSubscription) {
+			this.csrfTokenSubscription.unsubscribe();
+		}
 	}
 
 	submit(): void {
 		const _data: ProfileDataPayload = {
-			'loginName': this.loginName.value.trim(),
-			'email': this.email.value.trim(),
-			'nachname': this.nachname.value.trim(),
-			'vorname': this.vorname.value.trim()
+			loginName: this.loginName.value.trim(),
+			email: this.email.value.trim(),
+			nachname: this.nachname.value.trim(),
+			vorname: this.vorname.value.trim()
 		};
 
 		this.messagesService.clear();
-		this.userService.changeProfileData(_data, this.cachedUser);
+		this.userService.changeProfileData(_data, this.cachedUser, this.csrfToken);
 
 	}
 

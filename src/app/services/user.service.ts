@@ -23,12 +23,12 @@ export class UserService {
 		store.initUser(user);
 	}
 
-	changePassword(changePasswordPayload: ChangePasswordPayload, cachedUser: User): void {
+	changePassword(changePasswordPayload: ChangePasswordPayload, cachedUser: User, csrfToken: string): void {
 
 		const url = environment.apiUrl + '/profiles/profile/password';
 		store.updateBlockingIndicator(true);
 
-		this.http.put(url, changePasswordPayload).pipe(
+		this.http.put(url, changePasswordPayload, { headers: { 'X-XSRF-TOKEN': csrfToken } }).pipe(
 			map(res => res as ResponsePayload),
 			publishLast(),
 			refCount()
@@ -63,12 +63,12 @@ export class UserService {
 		);
 	}
 
-	changeProfileData(profileDataPayload: ProfileDataPayload, cachedUser: User): void {
+	changeProfileData(profileDataPayload: ProfileDataPayload, cachedUser: User, csrfToken: string): void {
 
 		const url = environment.apiUrl + '/profiles/profile/data';
 		store.updateBlockingIndicator(true);
 
-		this.http.put(url, profileDataPayload).pipe(
+		this.http.put(url, profileDataPayload, { headers: { 'X-XSRF-TOKEN': csrfToken } }).pipe(
 			map(res => res as ResponsePayload),
 			publishLast(),
 			refCount()
