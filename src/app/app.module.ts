@@ -18,6 +18,7 @@ import { BaseDataComponent } from './profil/base-data.component';
 import { PasswordComponent } from './profil/password.component';
 import { FormErrorComponent } from './shared/components/form-error/form-error.component';
 import { AuthInterceptor } from './services/auth.interceptor';
+import { DeleteAccountComponent } from './profil/delete-account.component';
 
 @NgModule({
 	declarations: [
@@ -27,7 +28,8 @@ import { AuthInterceptor } from './services/auth.interceptor';
 		ProfilComponent,
 		BaseDataComponent,
 		PasswordComponent,
-		FormErrorComponent
+		FormErrorComponent,
+		DeleteAccountComponent,
 	],
 	imports: [
 		BrowserModule,

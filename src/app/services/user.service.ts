@@ -7,6 +7,8 @@ import { HttpErrorService } from '../error/http-error.service';
 import { environment } from '../../environments/environment';
 // tslint:disable-next-line:max-line-length
 import { User, ChangePasswordPayload, ProfileDataPayload, AuthenticatedUser, STORAGE_KEY_FULL_NAME, STORAGE_KEY_SESSION_EXPIRES_AT, STORAGE_KEY_DEV_SESSION_ID } from '../shared/model/app-model';
+import { SessionService } from './session.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -16,6 +18,7 @@ export class UserService {
 	constructor(private http: HttpClient
 		, private httpErrorService: HttpErrorService
 		, private messagesService: MessagesService
+		, private sessionService: SessionService
 		, private logService: LogService) { }
 
 
@@ -48,6 +51,8 @@ export class UserService {
 						this.messagesService.info(_message.message);
 					}
 					store.updateBlockingIndicator(false);
+					this.sessionService.clearSession();
+
 				} else {
 					store.updateBlockingIndicator(false);
 					this.messagesService.error('Es ist ein unerwarteter Fehler aufgetreten. Bitte schreiben Sie eine Mail an info@egladil.de.');
@@ -106,6 +111,17 @@ export class UserService {
 				store.updateBlockingIndicator(false);
 				this.httpErrorService.handleError(error, 'changeProfileData');
 			})
+		);
+	}
+
+	deleteAccount(csrfToken: string): Observable<ResponsePayload> {
+		const url = environment.apiUrl + '/profiles/profile';
+		store.updateBlockingIndicator(true);
+
+		return this.http.delete(url, { headers: { 'X-XSRF-TOKEN': csrfToken } }).pipe(
+			map(res => res as ResponsePayload),
+			publishLast(),
+			refCount()
 		);
 	}
 }
