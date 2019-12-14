@@ -30,6 +30,10 @@ export class PasswordComponent implements OnInit, OnDestroy {
 
 	private userSubscription: Subscription;
 
+	private csrfTokenSubscription: Subscription;
+
+	private csrfToken = '';
+
 	private cachedUser: User;
 
 	showBlockingIndicator: boolean;
@@ -40,14 +44,14 @@ export class PasswordComponent implements OnInit, OnDestroy {
 		this.tooltipPasswort = AppConstants.tooltips.PASSWORTREGELN;
 
 		this.changePwdForm = this.fb.group({
-			'oldPassword': ['', [Validators.required, passwortValidator]],
-			'passwort': ['', [Validators.required, passwortValidator]],
-			'passwortWdh': ['', [Validators.required, passwortValidator]]
+			oldPassword: ['', [Validators.required, passwortValidator]],
+			passwort: ['', [Validators.required, passwortValidator]],
+			passwortWdh: ['', [Validators.required, passwortValidator]]
 		}, { validator: passwortPasswortWiederholtValidator });
 
-		this.oldPassword = this.changePwdForm.controls['oldPassword'];
-		this.passwort = this.changePwdForm.controls['passwort'];
-		this.passwortWdh = this.changePwdForm.controls['passwortWdh'];
+		this.oldPassword = this.changePwdForm.controls.oldPassword;
+		this.passwort = this.changePwdForm.controls.passwort;
+		this.passwortWdh = this.changePwdForm.controls.passwortWdh;
 
 	}
 
@@ -61,6 +65,12 @@ export class PasswordComponent implements OnInit, OnDestroy {
 
 		);
 
+		this.csrfTokenSubscription = store.csrfToken$.subscribe(
+			token => {
+				this.csrfToken = token;
+			}
+		);
+
 
 		this.blockingIndicatorSubscription = store.blockingIndicator$.subscribe(
 			value => this.showBlockingIndicator = value
@@ -71,21 +81,27 @@ export class PasswordComponent implements OnInit, OnDestroy {
 		if (this.blockingIndicatorSubscription) {
 			this.blockingIndicatorSubscription.unsubscribe();
 		}
+		if (this.userSubscription) {
+			this.userSubscription.unsubscribe();
+		}
+		if (this.csrfTokenSubscription) {
+			this.csrfTokenSubscription.unsubscribe();
+		}
 	}
 
 	submit(): void {
 
 		const _twoPasswords: TwoPasswords = {
-			'passwort': this.passwort.value,
-			'passwortWdh': this.passwortWdh.value
+			passwort: this.passwort.value,
+			passwortWdh: this.passwortWdh.value
 		};
 
 		const credentials: ChangePasswordPayload = {
-			'passwort': this.oldPassword.value,
-			'twoPasswords': _twoPasswords
+			passwort: this.oldPassword.value,
+			twoPasswords: _twoPasswords
 		};
 
-		this.userService.changePassword(credentials, this.cachedUser);
+		this.userService.changePassword(credentials, this.cachedUser, this.csrfToken);
 	}
 }
 

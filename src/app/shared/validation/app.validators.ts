@@ -8,7 +8,7 @@ export function emailValidator(control: any): {
 	if (!control.value || control.value === '' || re.test(control.value)) {
 		return null;
 	} else {
-		return { 'invalidEMail': true };
+		return { invalidEMail: true };
 	}
 }
 export function passwortValidator(control: any): {
@@ -20,7 +20,7 @@ export function passwortValidator(control: any): {
 	if (!control.value || control.value === '' || re.test(control.value)) {
 		return null;
 	} else {
-		return { 'invalidPassword': true };
+		return { invalidPassword: true };
 	}
 }
 
@@ -32,7 +32,7 @@ export function einmalPasswordValidator(control: any): {
 	if (!control.value || control.value === '' || re.test(control.value)) {
 		return null;
 	} else {
-		return { 'invalidEinmalPassword': true };
+		return { invalidEinmalPassword: true };
 	}
 }
 
@@ -69,7 +69,7 @@ export function passwortPasswortNeuValidator(formGroup: AbstractControl): {
 	const passwort2 = passwort2Control.value;
 
 	if (hasPasswortPasswortWdhError(passwort1, passwort2)) {
-		return { 'passwortNeuPasswortNeuWdh': true };
+		return { passwortNeuPasswortNeuWdh: true };
 	}
 }
 
@@ -85,7 +85,7 @@ export function passwortPasswortWiederholtValidator(formGroup: AbstractControl):
 	const passwort = passwort1Control.value;
 	const passwortWdh = passwort2Control.value;
 	if (hasPasswortPasswortWdhError(passwort, passwortWdh)) {
-		return { 'passwortNeuPasswortNeuWdh': true };
+		return { passwortNeuPasswortNeuWdh: true };
 	}
 }
 
@@ -102,7 +102,7 @@ export function emailEmailNeuValidator(formGroup: AbstractControl): {
 	const attr2 = email2Control.value;
 
 	if (hasAttributeAttributeWdhEqualError(attr1, attr2)) {
-		return { 'attributeAttributeWdhEqual': true };
+		return { attributeAttributeWdhEqual: true };
 	}
 }
 
