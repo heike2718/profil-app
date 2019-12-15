@@ -101,6 +101,7 @@ export class PasswordComponent implements OnInit, OnDestroy {
 			twoPasswords: _twoPasswords
 		};
 
+		this.changePwdForm.reset();
 		this.userService.changePassword(credentials, this.cachedUser, this.csrfToken);
 	}
 }
