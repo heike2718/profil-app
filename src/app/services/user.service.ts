@@ -82,7 +82,7 @@ export class UserService {
 						this.messagesService.info(_message.message);
 					}
 					store.updateBlockingIndicator(false);
-					this.sessionService.clearSession();
+					// this.sessionService.clearSession();
 
 				} else {
 					store.updateBlockingIndicator(false);
