@@ -6,16 +6,21 @@
 					<div id="left-nav-header" class="left-nav-item col-12">Einstellungen</div>
 					<div [ngClass]="getClassnameProfil()" (click)="toggleProfilAktiv()">
 						Profil</div>
-					<div id="left-nav-link-last" [ngClass]="getClassnamePassword()" (click)="togglePasswordAktiv()">
+					<div [ngClass]="getClassnamePassword()" (click)="togglePasswordAktiv()">
 						Passwort</div>
+					<div id="left-nav-link-last" [ngClass]="getClassnameDeleteAccount()" (click)="toggleDeleteAccountActive()">
+						Konto löschen</div>
 				</div>
 			</div>
 			<div id="nav-detail" class="col-sm-9">
-				<div *ngIf="profilAktiv">
+				<div *ngIf="changeDataActive()">
 					<prfl-base-data></prfl-base-data>
 				</div>
-				<div *ngIf="passwordAktiv">
+				<div *ngIf="changePasswordActive()">
 					<prfl-password></prfl-password>
+				</div>
+				<div *ngIf="deleteAccountActive()">
+					<prfl-delete-account></prfl-delete-account>
 				</div>
 			</div>
 		</div>

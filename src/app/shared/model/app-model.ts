@@ -3,6 +3,8 @@ export const STORAGE_KEY_FULL_NAME = 'prf_full_name';
 export const STORAGE_KEY_SESSION_EXPIRES_AT = 'prf_session_expires_at';
 export const STORAGE_KEY_DEV_SESSION_ID = 'prf_dev_session_id';
 
+export type AccountAction = 'change data' | 'change password' | 'delete account';
+
 
 
 export interface UserSession {

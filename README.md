@@ -4,6 +4,12 @@
 
 ### ReleaseNotes
 
+__Release 4.3.0:__
+
+[Userdaten überleben refresh nicht](https://github.com/heike2718/profil-app/issues/12)
+
+[Benutzerkonto löschen](https://github.com/heike2718/profil-app/issues/9)
+
 __Release 4.2.0:__
 
 [Add XSRF Protection](https://github.com/heike2718/profil-app/issues/2)
