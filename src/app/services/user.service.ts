@@ -26,6 +26,37 @@ export class UserService {
 		store.initUser(user);
 	}
 
+	loadUser(): void {
+		const url = environment.apiUrl + '/profiles/profile';
+		store.updateBlockingIndicator(true);
+
+		this.http.get(url).pipe(
+			map(res => res as ResponsePayload),
+			publishLast(),
+			refCount()
+		).subscribe(
+			payload => {
+				const authUser = payload.data as AuthenticatedUser;
+
+				if (authUser.session.fullName !== null) {
+					localStorage.setItem(STORAGE_KEY_FULL_NAME, authUser.session.fullName);
+				}
+				localStorage.setItem(STORAGE_KEY_SESSION_EXPIRES_AT, JSON.stringify(authUser.session.expiresAt));
+
+				if (authUser.session.sessionId && !environment.production) {
+					localStorage.setItem(STORAGE_KEY_DEV_SESSION_ID, authUser.session.sessionId);
+				}
+
+				store.initUser(authUser.user);
+				store.updateBlockingIndicator(false);
+			},
+			(error => {
+				store.updateBlockingIndicator(false);
+				this.httpErrorService.handleError(error, 'changePassword');
+			})
+		);
+	}
+
 	changePassword(changePasswordPayload: ChangePasswordPayload, cachedUser: User, csrfToken: string): void {
 
 		const url = environment.apiUrl + '/profiles/profile/password';

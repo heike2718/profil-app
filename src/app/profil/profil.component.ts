@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { store } from '../shared/store/app-data';
 import { Observable, Subscription } from 'rxjs';
-import { User, AccountAction } from '../shared/model/app-model';
+import { User, AccountAction, STORAGE_KEY_ID_REFERENCE } from '../shared/model/app-model';
+import { UserService } from '../services/user.service';
 
 @Component({
 	selector: 'prfl-profil',
@@ -12,23 +13,32 @@ export class ProfilComponent implements OnInit, OnDestroy {
 
 	user$: Observable<User>;
 
+	private userLoaded: boolean;
+
 	private activeAccountAction: AccountAction;
 
 	loading = true;
 
 	private userSubscription: Subscription;
 
-	constructor() {
+	constructor(private userService: UserService) {
 	}
 
 	ngOnInit() {
 		this.user$ = store.user$;
 
 		this.userSubscription = this.user$.subscribe(
-			_user => this.loading = false
+			user => {
+				this.loading = false;
+				this.userLoaded = user.email.length > 0;
+			}
 		);
 
 		this.activeAccountAction = 'change data';
+
+		if (localStorage.getItem(STORAGE_KEY_ID_REFERENCE) && !this.userLoaded) {
+			this.userService.loadUser();
+		}
 	}
 
 	ngOnDestroy() {
