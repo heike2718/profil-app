@@ -55,5 +55,8 @@
     "typescript": "^3.5.3",
     "webpack": "^4.30.0",
     "webpack-dev-server": "^3.7.1"
+  },
+  "resolutions": {
+    "serialize-javascript": "^2.1.1"
   }
 }
