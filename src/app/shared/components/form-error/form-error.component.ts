@@ -59,6 +59,12 @@ export class FormErrorComponent implements OnInit {
 					case 'invalidEMail':
 						message = `Bitte geben Sie eine gültige E-Mail Adresse an.`;
 						break;
+					case 'emailKnown':
+						message = `Diese Mailadresse gibt es schon.`;
+						break;
+					case 'loginNameKnown':
+						message = `Diesen Loginnamen gibt es schon.`;
+						break;
 					case 'invalidPassword':
 						message = `Passwort-Regeln: mindestens 8 höchstens 20 Zeichen, mindestens ein Buchstabe, mindestens eine Ziffer,
  keine Leerzeichen am Anfang und am Ende`;

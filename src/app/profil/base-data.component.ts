@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, AbstractControl, Validators } from '@angular/forms';
+import { FormGroup, AbstractControl, Validators, FormControl } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import { User, ProfileDataPayload } from '../shared/model/app-model';
 import { store } from '../shared/store/app-data';
-import { emailValidator } from '../shared/validation/app.validators';
 import { UserService } from '../services/user.service';
-import { MessagesService } from 'hewi-ng-lib';
+import { MessagesService, ResponsePayload, LogService } from 'hewi-ng-lib';
+import { RemoteValidatorService } from '../services/remote-validator.service';
+import { map } from 'rxjs/operators';
 
 @Component({
 	selector: 'prfl-base-data',
@@ -38,15 +39,24 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 
 	showBlockingIndicator: boolean;
 
-	constructor(private fb: FormBuilder
-		, private userService: UserService
-		, private messagesService: MessagesService) {
+	constructor(private userService: UserService
+		, private validationService: RemoteValidatorService
+		, private messagesService: MessagesService
+		, private logger: LogService) {
 
-		this.changeDataForm = this.fb.group({
-			loginName: ['', [Validators.required]],
-			vorname: ['', [Validators.required]],
-			nachname: ['', [Validators.required]],
-			email: ['', [Validators.required, emailValidator]]
+		this.changeDataForm = new FormGroup({
+			loginName: new FormControl('', {
+				validators: [Validators.required, Validators.maxLength(255)],
+				asyncValidators: [this.forbiddenLoginName.bind(this)],
+				updateOn: 'blur'
+			}),
+			email: new FormControl('', {
+				validators: [Validators.required, Validators.email],
+				asyncValidators: [this.forbiddenEmail.bind(this)],
+				updateOn: 'blur'
+			}),
+			vorname: new FormControl('', { validators: [Validators.required, Validators.maxLength(100)] }),
+			nachname: new FormControl('', { validators: [Validators.required, Validators.maxLength(100)] }),
 		});
 
 		this.loginName = this.changeDataForm.controls.loginName;
@@ -106,4 +116,63 @@ export class BaseDataComponent implements OnInit, OnDestroy {
 		this.messagesService.clear();
 	}
 
+	forbiddenEmail(control: FormControl): Promise<any> | Observable<any> {
+		const promise = new Promise<any>((resolve, _reject) => {
+			const email = control.value;
+
+			if (this.csrfToken && this.csrfToken.length > 0) {
+
+				this.validationService.validate('email', email, this.csrfToken).pipe(
+					map(res => res as ResponsePayload)
+				).subscribe(
+					payload => {
+						const messagePayload = payload.message;
+
+						if ('ERROR' === messagePayload.level) {
+							resolve({ emailKnown: true });
+						} else {
+							resolve(null);
+						}
+					},
+					error => {
+						this.logger.debug(error);
+						resolve(null);
+					}
+				);
+			} else {
+				resolve(null);
+			}
+		});
+		return promise;
+	}
+
+	forbiddenLoginName(control: FormControl): Promise<any> | Observable<any> {
+		const promise = new Promise<any>((resolve, _reject) => {
+			const loginName = control.value;
+
+			if (this.csrfToken && this.csrfToken.length > 0) {
+
+				this.validationService.validate('loginname', loginName, this.csrfToken).pipe(
+					map(res => res as ResponsePayload)
+				).subscribe(
+					payload => {
+						const messagePayload = payload.message;
+
+						if ('ERROR' === messagePayload.level) {
+							resolve({ loginNameKnown: true });
+						} else {
+							resolve(null);
+						}
+					},
+					error => {
+						this.logger.debug(error);
+						resolve(null);
+					}
+				);
+			} else {
+				resolve(null);
+			}
+		});
+		return promise;
+	}
 }
