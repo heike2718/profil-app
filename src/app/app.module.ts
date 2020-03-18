@@ -19,6 +19,7 @@ import { PasswordComponent } from './profil/password.component';
 import { FormErrorComponent } from './shared/components/form-error/form-error.component';
 import { AuthInterceptor } from './services/auth.interceptor';
 import { DeleteAccountComponent } from './profil/delete-account.component';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
 	declarations: [
@@ -30,6 +31,7 @@ import { DeleteAccountComponent } from './profil/delete-account.component';
 		PasswordComponent,
 		FormErrorComponent,
 		DeleteAccountComponent,
+		AboutComponent,
 	],
 	imports: [
 		BrowserModule,

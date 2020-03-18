@@ -4,6 +4,10 @@
 
 ### ReleaseNotes
 
+__Release 5.0.0:__
+
+update to angular 9
+
 __Release 4.3.0:__
 
 [Userdaten überleben refresh nicht](https://github.com/heike2718/profil-app/issues/12)
