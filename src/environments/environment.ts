@@ -7,7 +7,7 @@ export const environment = {
   production: false,
   version: '5.0.0',
   envName: 'Development',
-  apiUrl: 'http://localhost:9600/profil-api',
+  apiUrl: 'http://192.168.10.176:9600/profil-api',
   assetsUrl: 'assets',
   loginRedirectUrl: 'http://localhost:4200',
   consoleLogActive: true,
