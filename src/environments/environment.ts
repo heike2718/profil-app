@@ -9,7 +9,7 @@ export const environment = {
   envName: 'Development',
   apiUrl: 'http://192.168.10.176:9600/profil-api',
   assetsUrl: 'assets',
-  loginRedirectUrl: 'http://localhost:4200',
+  loginRedirectUrl: 'http://192.168.10.176:80/profil-app',
   consoleLogActive: true,
   serverLogActive: true,
   loglevel: 1
