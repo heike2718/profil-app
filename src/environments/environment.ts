@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  version: '5.0.0',
+  version: '5.0.1',
   envName: 'Development',
   apiUrl: 'http://192.168.10.176:9600/profil-api',
   assetsUrl: 'assets',

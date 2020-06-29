@@ -4,6 +4,10 @@
 
 ### ReleaseNotes
 
+__Release 5.0.1:__
+
+npm audit hints resolved
+
 __Release 5.0.0:__
 
 update to angular 9
