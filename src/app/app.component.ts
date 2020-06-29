@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { JWTService } from 'hewi-ng-lib';
-import { environment } from 'src/environments/environment';
+import { environment } from '../environments/environment';
 import { store } from './shared/store/app-data';
 
 @Component({
