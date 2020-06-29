@@ -2,7 +2,7 @@ import { Injectable, ErrorHandler, Injector } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LogService, MessagesService } from 'hewi-ng-lib';
 import { LogPublishersService } from '../logger/log-publishers.service';
-import { environment } from 'src/environments/environment.qs';
+import { environment } from '../../environments/environment';
 import { STORAGE_KEY_ID_REFERENCE } from '../shared/model/app-model';
 
 @Injectable({
