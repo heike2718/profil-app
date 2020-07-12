@@ -82,6 +82,7 @@ export class AuthService {
 		if ('login' === authResult.state) {
 
 			const url = environment.apiUrl + '/auth/session';
+
 			store.updateBlockingIndicator(true);
 
 			this.httpClient.post(url, authResult.idToken).pipe(
