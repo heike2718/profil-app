@@ -4,6 +4,10 @@
 
 ### ReleaseNotes
 
+__Release 5.1.0:__
+
+jwt auf authorization token grant umgestellt, damit kein JWT im Browser landet.
+
 __Release 5.0.1:__
 
 npm audit hints resolved
